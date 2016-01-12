@@ -21,7 +21,7 @@ public class Deck : MonoBehaviour {
             new_card.transform.SetParent(this.transform);
             new_card.transform.position = this.transform.position;
             new_card.name = "Card " + idx.ToString();
-            new_card.GetComponent<Image>().enabled = false;
+            new_card.SetActive(false);
             cards_.Add(new_card);
         }
     }
@@ -36,7 +36,7 @@ public class Deck : MonoBehaviour {
         {
             GameObject card = cards_[0];
             cards_.RemoveAt(0);
-            card.GetComponent<Image>().enabled = true;
+            card.SetActive(true);
             card.transform.SetParent(this.transform.parent.GetChild(1).transform);
         }
     }

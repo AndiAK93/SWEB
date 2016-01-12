@@ -1,8 +1,11 @@
+using UnityEngine;
 public enum CardType { Knowledge, Activity, Lecture };
 
 public abstract class CardLogic
 {
     public CardType type_;     //for effect
+
+    protected Card card_;
 
     public virtual Effect GetEffect()
     {
@@ -24,10 +27,13 @@ public abstract class CardLogic
     public virtual ReturnType DecDuration(int dec) { return ReturnType.NOT_POSSIBLE; }
 
     public virtual int GetAttack() { return 0; }
+    public virtual int GetHealth() { return 0; }
 
     // this function updates the card, wenn sie gekilled wurde bzw fertig ist etc
     public virtual void Update() { }
-    public void RemoveCard() { }
+    public void RemoveCard() {
+        card_.Kill();
+    }
 }
 
 
@@ -37,7 +43,8 @@ public class CardKnowledge : CardLogic
     int health_ = 0;
     Effect effect_ = null;
 
-    public CardKnowledge(int attack, int health, Effect effect) {
+    public CardKnowledge(Card card, int attack, int health, Effect effect) {
+        card_ = card;
         type_ = CardType.Knowledge;
         attack_ = attack;
         health_ = health;
@@ -58,7 +65,7 @@ public class CardKnowledge : CardLogic
     }
 
     public override int GetAttack() { return attack_; }
-
+    public override int GetHealth() { return health_; }
     public override ReturnType IncHealth(int inc)
     {
         health_ += inc;

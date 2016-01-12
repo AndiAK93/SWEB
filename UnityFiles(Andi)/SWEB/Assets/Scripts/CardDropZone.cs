@@ -21,12 +21,12 @@ public class CardDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        color_ = GetComponent<Image>().color;
-        GetComponent<Image>().color = color_highlight_;
+        color_ = GetComponentInChildren<Image>().color;
+        GetComponentInChildren<Image>().color = color_highlight_;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        GetComponent<Image>().color = color_;
+        GetComponentInChildren<Image>().color = color_;
     }
 }
