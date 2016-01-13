@@ -15,7 +15,7 @@ public class Card : MonoBehaviour
 
     void Start()
     {
-        card_logic_ = new CardKnowledge(this, 5, 6, null);
+        card_logic_ = new CardKnowledge(this, 5, 6, new EffectIncHealth());
 
         health_ = GetComponentsInChildren<Text>()[0];
         attack_ = GetComponentsInChildren<Text>()[1];
@@ -32,7 +32,7 @@ public class Card : MonoBehaviour
 
     public void UseOn(Card target) {
         Debug.Log("Card " + name + " is used on card " + target.name);
-        card_logic_.UseOn(target.card_logic_);
+        ReturnType status = card_logic_.UseOn(target.card_logic_);
     }
 
     public void Kill() {

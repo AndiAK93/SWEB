@@ -17,7 +17,7 @@ public class Effect
 
 public class EffectIncHealth : Effect
 {
-    int inc_ = 0;
+    int inc_ = 3;
     public override ReturnType ApplyEffect(CardLogic from, CardLogic target)
     {
         return target.IncHealth(inc_);

@@ -10,6 +10,7 @@ public class CardDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
+        
         Card dragged = eventData.pointerDrag.GetComponent<Card>();
         if (dragged != null) {
             Card droped_onto = GetComponent<Card>();
