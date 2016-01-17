@@ -4,40 +4,69 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class Deck : MonoBehaviour {
-    public GameObject card_for_init_;
+    public GameObject card_init_knowledge_;
+    public GameObject card_init_lecture_;
+    public GameObject card_init_activity_;
 
-    List<GameObject> cards_;
+    Player player_;
+    List<Card> cards_;
 
     class Constatns {
-        public static int CardsPerDeck = 2;
+        public static int CardsPerDeck = 10;
     }
 
     // Use this for initialization
-    void Start () {
-        cards_ = new List<GameObject>();
-        // create deck
-        for (int idx = 0; idx < Constatns.CardsPerDeck; idx++) {
-            GameObject new_card = Instantiate(card_for_init_);
-            new_card.transform.SetParent(this.transform);
-            new_card.transform.position = this.transform.position;
-            new_card.name = "Card " + idx.ToString();
-            new_card.SetActive(false);
-            cards_.Add(new_card);
+    void Start() {
+        player_ = GetComponentInParent<Player>();
+        cards_ = new List<Card>();
+        CreateRandomDeck();
+    }
+
+    void CreateRandomDeck() {
+        for (int card_idx = 0; card_idx < Constatns.CardsPerDeck; card_idx++) {
+            Card card = CreateCard(card_idx % 2 + 1);
+            cards_.Add(card);
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
-    public void OnMouseDown() {
-        if (cards_.Count > 0)
-        {
-            GameObject card = cards_[0];
-            cards_.RemoveAt(0);
-            card.SetActive(true);
-            card.transform.SetParent(this.transform.parent.GetChild(1).transform);
+    public Card CreateCard(int id) {
+        GameObject new_card = null;
+        Card card = null;
+        switch (id % 3) {
+            case 0:
+                new_card = Instantiate(card_init_knowledge_);
+                card = new_card.GetComponent<Card>();
+                card.SetCardLogic(new CardKnowledge(card, 5, 6, null));
+                break;
+            case 1:
+                new_card = Instantiate(card_init_activity_);
+                card = new_card.GetComponent<Card>();
+                card.SetCardLogic(new CardActivity(card, new EffectIncHealth()));
+                break;
+            case 2:
+                new_card = Instantiate(card_init_lecture_);
+                card = new_card.GetComponent<Card>();
+                card.SetCardLogic(new CardLecture(card, 1, 1, new EffectSpawnCard(), null));
+                break;
         }
+
+        new_card.transform.SetParent(this.transform);
+        new_card.transform.position = this.transform.position;
+        new_card.name = "Card " + cards_.Count.ToString();
+        new_card.SetActive(false);
+        card.SetPlayer(player_);
+        return card;
+    }
+
+    public void DrawCardFromDeck() {
+        if (cards_.Count > 0) {
+            Card card = cards_[0];
+            cards_.RemoveAt(0);
+            player_.GetHand().AddCardToHand(card);
+        }
+    }
+
+    public void RemoveCardFromDead(Card card) {
+        cards_.Remove(card);
     }
 }

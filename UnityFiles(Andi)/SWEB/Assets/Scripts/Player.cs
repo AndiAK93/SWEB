@@ -14,16 +14,28 @@ public class Player : MonoBehaviour {
         field_ = GetComponentInChildren<Field>();
 
         Player[] players = GetComponentsInParent<Player>();
-        for (int idx = 0; idx < players.Length; idx++) {
-            if (players[idx] != this) {
-                enemy_ = players[idx];
+
+        for (int p_idx = 0; p_idx < players.Length; p_idx++) {
+            if (players[p_idx] != this) {
+                enemy_ = players[p_idx];
+                break;
             }
         }
-
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    public Deck GetDeck() {
+        return deck_;
+    }
+
+    public Hand GetHand() {
+        return hand_;
+    }
+
+    public Field GetField() {
+        return field_;
+    }
+
+    public Player GetEnemy() {
+        return enemy_;
+    }
 }
