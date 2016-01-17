@@ -31,6 +31,14 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         card_description_text_.text = "Description";
     }
 
+    public string GetName() {
+        return card_logic_.GetType().ToString();
+    }
+
+    public string GetDescription() {
+        return "Hier steht die beschreiebung + Efffect etc";
+    }
+
     public void SetPlayer(Player player) {
         player_ = player;
     }
@@ -120,11 +128,14 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void OnPointerEnter(PointerEventData eventData) {
         color_ = GetComponentInChildren<Image>().color;
         GetComponentInChildren<Image>().color = color_highlight_;
+        Game.GetGame().GetInspector().ShowInspector();
+        Game.GetGame().GetInspector().ShowCard(this);
         //transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
         GetComponentInChildren<Image>().color = color_;
+        Game.GetGame().GetInspector().HideInspector();
         //transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
 }

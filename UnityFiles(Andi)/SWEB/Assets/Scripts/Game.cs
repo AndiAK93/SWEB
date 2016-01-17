@@ -13,6 +13,7 @@ public class Game : MonoBehaviour {
     int cur_player_idx_;
 
     Text round_text_;
+    Inspector inspector_;
 
     // Use this for initialization
     void Start() {
@@ -23,10 +24,17 @@ public class Game : MonoBehaviour {
         cur_player_idx_ = 0;
         round_text_ = GetComponentsInChildren<Text>()[0];
         round_text_.text = round_.ToString();
+
+        inspector_ = GetComponentInChildren<Inspector>();
+        inspector_.HideInspector();
     }
 
     public static Game GetGame() {
         return game_;
+    }
+
+    public Inspector GetInspector() {
+        return inspector_;
     }
 
     public int GetRound() {
