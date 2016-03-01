@@ -7,6 +7,9 @@ public class Player : MonoBehaviour {
     Field field_;
     Player enemy_;
 
+    int health_;
+
+
 	// Use this for initialization
 	void Start () {
         deck_ = GetComponentInChildren<Deck>();
@@ -33,5 +36,9 @@ public class Player : MonoBehaviour {
 
     public Player GetEnemy() {
         return enemy_;
+    }
+
+    public void ModifyHealth(int mod) {
+        health_ += mod;
     }
 }
