@@ -11,7 +11,7 @@ public class Deck : MonoBehaviour {
     Player player_;
     List<Card> cards_;
 
-    class Constatns {
+    class Constants {
         public static int CardsPerDeck = 10;
     }
 
@@ -23,7 +23,7 @@ public class Deck : MonoBehaviour {
     }
 
     void CreateRandomDeck() {
-        for (int card_idx = 0; card_idx < Constatns.CardsPerDeck; card_idx++) {
+        for (int card_idx = 0; card_idx < Constants.CardsPerDeck; card_idx++) {
             Card card = CreateCard(card_idx % 2 + 1);
             cards_.Add(card);
         }
