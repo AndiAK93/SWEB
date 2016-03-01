@@ -78,6 +78,16 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         }
     }
 
+    public void UseOn(Player target)
+    {
+        Debug.Log("Card " + name + " is used on Player " + target.name);
+        ReturnType status = card_logic_.UseOn(target);
+        if (status != ReturnType.NOT_POSSIBLE)
+        {
+            Debug.Log("Card " + name + " is used on Player " + target.name);
+        }
+    }
+
     public void Kill() {
         player_.GetHand().RemoveCardFromHand(this);
         player_.GetField().RemoveCardFromField(this);

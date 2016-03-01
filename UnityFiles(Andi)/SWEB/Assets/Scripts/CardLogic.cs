@@ -191,13 +191,14 @@ public class CardActivity : CardLogic {
 
         // wenn die angreifende karte einen effekt hat wende diesen auf das target an
         if (effect_this != null) {
-            effect_this.ApplyEffect(this, target);
-        }
+            if (effect_this.ApplyEffect(this, target) == ReturnType.OK) {
+                this.RemoveCard();
 
-        this.RemoveCard();
-
-        target.Update();
-        return ReturnType.OK;
+                target.Update();
+                return ReturnType.OK;
+            }  
+        } 
+        return ReturnType.NOT_POSSIBLE;
     }
 
     public override bool CanBeUsedFromHand() {

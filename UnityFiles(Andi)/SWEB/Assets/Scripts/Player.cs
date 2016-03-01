@@ -12,15 +12,6 @@ public class Player : MonoBehaviour {
         deck_ = GetComponentInChildren<Deck>();
         hand_ = GetComponentInChildren<Hand>();
         field_ = GetComponentInChildren<Field>();
-
-        Player[] players = GetComponentsInParent<Player>();
-
-        for (int p_idx = 0; p_idx < players.Length; p_idx++) {
-            if (players[p_idx] != this) {
-                enemy_ = players[p_idx];
-                break;
-            }
-        }
     }
 
     public Deck GetDeck() {
@@ -33,6 +24,11 @@ public class Player : MonoBehaviour {
 
     public Field GetField() {
         return field_;
+    }
+
+    public void SetEnemy(Player enemy)
+    {
+        enemy_ = enemy;
     }
 
     public Player GetEnemy() {

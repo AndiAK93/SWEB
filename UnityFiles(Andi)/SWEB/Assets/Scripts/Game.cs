@@ -15,12 +15,24 @@ public class Game : MonoBehaviour {
     Text round_text_;
     Inspector inspector_;
 
+    dbInterface data_base_;
+
     // Use this for initialization
     void Start() {
+        // create data_base_ 
+        data_base_ = new dbInterface();
+
         game_ = this;
+
+        
+
         cycle_ = 2;
         round_ = 1;
         players_ = GetComponentsInChildren<Player>();
+
+        players_[0].SetEnemy(players_[1]);
+        players_[1].SetEnemy(players_[0]);
+
         cur_player_idx_ = 0;
         round_text_ = GetComponentsInChildren<Text>()[0];
         round_text_.text = round_.ToString();
