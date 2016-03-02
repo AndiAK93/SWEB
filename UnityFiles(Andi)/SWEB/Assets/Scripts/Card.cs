@@ -17,6 +17,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     string card_name_;
     string card_description_;
 
+    int unique_id_;
+
     Text card_name_text_;
     Text card_description_text_;
 
@@ -28,7 +30,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     bool is_on_hand_;
 
     void Awake() {
-        Debug.Log("valled");
         card_name_text_ = GetComponentsInChildren<Text>()[Card.IDX_NAME_TEXT];
         card_description_text_ = GetComponentsInChildren<Text>()[Card.IDX_DESCRIPTION_TEXT];
 
@@ -41,6 +42,26 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         image_.overrideSprite = sprite;
         card_name_ = "";// card_logic_.GetType().ToString();
         card_description_ = "Description";
+    }
+
+    public void SetId(int id)
+    {
+        id_ = id;
+    }
+
+    public int GetId()
+    {
+        return id_;
+    }
+
+    public void SetUniqueId(int unique_id)
+    {
+        unique_id_ = unique_id;
+    }
+
+    public int GetUniqueId()
+    {
+        return unique_id_;
     }
 
     public void SetName(string new_name) {
@@ -81,6 +102,11 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         card_logic_ = logic;
     }
 
+    public CardLogic GetCardLogic()
+    {
+        return card_logic_;
+    }
+
     public bool IsOnHand() {
         return is_on_hand_;
     }
@@ -99,10 +125,10 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void UseOn(Card target) {
         ReturnType status = card_logic_.UseOn(target.card_logic_);
-        if(status != ReturnType.NOT_POSSIBLE && card_logic_.type_ == CardType.Knowledge)
-        {
-            
-        }
+
+        //Network
+        player_.EnemyUseOn(GetUniqueId(), target.GetUniqueId());
+
         if (status != ReturnType.NOT_POSSIBLE) {
             Debug.Log("Card " + GetName() + " is used on card " + target.GetName());
         }
@@ -134,10 +160,12 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     static Color color_highlight_ = Color.cyan;
 
     public void SetParentToReturnTo(Transform new_parent) {
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
         parent_to_return_to_ = new_parent;
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
         parent_to_return_to_ = this.transform.parent;
         drag_offset_.x = eventData.position.x - this.transform.position.x;
         drag_offset_.y = eventData.position.y - this.transform.position.y;
@@ -146,16 +174,19 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     }
 
     public void OnDrag(PointerEventData eventData) {
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
         this.transform.position = eventData.position - drag_offset_;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
         // remove card from hand
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
         this.transform.SetParent(parent_to_return_to_);
         this.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
     public void OnDrop(PointerEventData eventData) {
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
         Card dragged = eventData.pointerDrag.GetComponent<Card>();
         if (dragged != null) {
             Card droped_onto = this;
@@ -177,5 +208,17 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         GetComponentInChildren<Image>().color = color_;
         Game.GetGame().GetInspector().HideInspector();
         //transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public bool IsMyCard()
+    {
+        PlayerServer playerServer = player_.GetComponent<PlayerServer>();
+        PlayerClient playerClient = player_.GetComponent<PlayerClient>();
+
+        if (playerClient != null && Network.peerType == NetworkPeerType.Client)
+            return true;
+        if (playerServer != null && Network.peerType == NetworkPeerType.Server)
+            return true;
+        return false;
     }
 }

@@ -9,7 +9,7 @@ public class Deck : MonoBehaviour {
     public GameObject card_init_activity_;
 
     Player player_;
-    List<Card> cards_;
+    public List<Card> cards_;
 
     class Constants {
         public static int CardsPerDeck = 10;
@@ -22,10 +22,19 @@ public class Deck : MonoBehaviour {
     }
 
     public void CreateRandomDeck() {
+        Debug.Log("CREATING RANDOM DECKKKSKSKKSKSKSKK");
         for (int card_idx = 0; card_idx < Constants.CardsPerDeck; card_idx++) {
             card_t db_Card = Game.GetGame().GetDataBank().getRandomCard();
+            GetComponent<NetworkView>().RPC("GeneratedCardForDeck", RPCMode.Others, db_Card.id_);
             cards_.Add(CreateCard(db_Card));
         }
+    }
+
+    [RPC]
+    private void GeneratedCardForDeck(int id)
+    {
+        card_t db_Card = Game.GetGame().GetDataBank().getCard(id);
+        cards_.Add(CreateCard(db_Card));
     }
 
     public Card CreateCard(card_t db_card) {
@@ -64,15 +73,34 @@ public class Deck : MonoBehaviour {
         new_card.transform.position = this.transform.position;
         new_card.name = db_card.name_;
         new_card.SetActive(false);
+        card.SetId(db_card.id_);
+        card.SetUniqueId(Game.unique_card_id++);
         card.SetPlayer(player_);
         card.SetName(db_card.name_);
         card.UpdateName();
-        
         return card;
     }
 
     public void DrawCardFromDeck() {
-        if (cards_.Count > 0) {
+        if (!Game.GetGame().IsMyTurn()) return;
+        if (Game.GetGame().canDrawCard) Game.GetGame().canDrawCard = false;
+        else return; 
+
+        Draw();
+        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
+    }
+
+    public void InitialDrawCardFromDeck()
+    {
+        Draw();
+        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
+    }
+
+    [RPC]
+    public void Draw()
+    {
+        if (cards_.Count > 0)
+        {
             Card card = cards_[0];
             cards_.RemoveAt(0);
             player_.GetHand().AddCardToHand(card);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
     Player player_;
-    List<Card> cards_;
+    public List<Card> cards_;
 
     // Use this for initialization
     void Start() {

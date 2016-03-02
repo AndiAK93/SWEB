@@ -7,10 +7,15 @@ public class Game : MonoBehaviour {
     // we allow only one game instance at a time
     static Game game_;
 
+    private const int initial_cards_on_hand_ = 5;
+
+    public static int unique_card_id = 0;
+
     Player[] players_;
     int round_;
     int cycle_;
-    int cur_player_idx_;
+    public int cur_player_idx_;
+    public bool canDrawCard = true;
 
     Text round_text_;
     Inspector inspector_;
@@ -31,8 +36,17 @@ public class Game : MonoBehaviour {
         players_[0].SetEnemy(players_[1]);
         players_[1].SetEnemy(players_[0]);
 
-        players_[0].GetDeck().CreateRandomDeck();
-        players_[1].GetDeck().CreateRandomDeck();
+        if (Network.peerType == NetworkPeerType.Server)
+        {
+            players_[0].GetDeck().CreateRandomDeck();
+            players_[1].GetDeck().CreateRandomDeck();
+
+            for (int i = 0; i < initial_cards_on_hand_; i++)
+            {
+                players_[0].GetDeck().InitialDrawCardFromDeck();
+                players_[1].GetDeck().InitialDrawCardFromDeck();
+            }
+        }       
 
         cur_player_idx_ = 0;
 
@@ -68,8 +82,7 @@ public class Game : MonoBehaviour {
     }
 
     public void RoundEndButtonClicked() {
-        if (Network.peerType == NetworkPeerType.Server && cur_player_idx_ == 1) return;
-        if (Network.peerType == NetworkPeerType.Client && cur_player_idx_ == 0) return;
+        if (!IsMyTurn()) return;
 
         Debug.Log("Round End Clicked!");
         cur_player_idx_ = (++cur_player_idx_) % 2;
@@ -82,6 +95,7 @@ public class Game : MonoBehaviour {
         }
 
         GetComponent<NetworkView>().RPC("EnemyEndButtonClicked", RPCMode.Others);
+        canDrawCard = true;
     }
 
     [RPC]
@@ -98,5 +112,15 @@ public class Game : MonoBehaviour {
         {
             players_[p_idx].GetField().UpdateCards();
         }
+        canDrawCard = true;
+    }
+
+    public bool IsMyTurn()
+    {
+        if (Network.peerType == NetworkPeerType.Client && cur_player_idx_ == 0)
+            return true;
+        else if (Network.peerType == NetworkPeerType.Server && cur_player_idx_ == 1)
+            return true;
+        return false;
     }
 }
