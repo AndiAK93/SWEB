@@ -41,13 +41,16 @@ public class ConnectionInitiation : MonoBehaviour
             connecting = false;
             if(Network.peerType == NetworkPeerType.Server && Network.connections.Length > 0)
             {
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene("scene01");
             }
             else if (Network.peerType == NetworkPeerType.Client)
             {
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene("scene01");
             }
-            GUI.Label(new Rect(10, 35, 300, 25), "Waiting for other player to connect..");
+            else if(Network.peerType == NetworkPeerType.Server)
+            {
+                GUI.Label(new Rect(10, 35, 300, 25), "Waiting for other player to connect..");
+            }          
         }
 
     }
