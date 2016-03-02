@@ -15,13 +15,24 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
 
     public void OnDrop(PointerEventData eventData) {
         Card card = eventData.pointerDrag.GetComponent<Card>();
+
         if (card != null && player_ == card.GetPlayer() && card.IsOnHand() && card.CanBePutOnField()) {
+            GetComponent<NetworkView>().RPC("EnemyPlayCard", RPCMode.Others, 2);
             Debug.Log(eventData.pointerDrag.name + " was dropped on " + gameObject.name);
             card.SetParentToReturnTo(this.transform);
             player_.GetHand().RemoveCardFromHand(card);
             this.AddCardToField(card);
             card.PlayCard();
         }
+    }
+
+    [RPC]
+    void EnemyPlayCard(int id)
+    {
+        Card card = player_.GetDeck().CreateCard(id);
+        player_.GetField().AddCardToField(card);
+        card.PlayCard();
+        Debug.Log(player_);
     }
 
     public void OnPointerEnter(PointerEventData eventData) {

@@ -73,6 +73,10 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void UseOn(Card target) {
         ReturnType status = card_logic_.UseOn(target.card_logic_);
+        if(status != ReturnType.NOT_POSSIBLE && card_logic_.type_ == CardType.Knowledge)
+        {
+            
+        }
         if (status != ReturnType.NOT_POSSIBLE) {
             Debug.Log("Card " + name + " is used on card " + target.name);
         }

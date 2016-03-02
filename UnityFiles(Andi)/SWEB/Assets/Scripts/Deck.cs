@@ -19,10 +19,9 @@ public class Deck : MonoBehaviour {
     void Start() {
         player_ = GetComponentInParent<Player>();
         cards_ = new List<Card>();
-        CreateRandomDeck();
     }
 
-    void CreateRandomDeck() {
+    public void CreateRandomDeck() {
         for (int card_idx = 0; card_idx < Constants.CardsPerDeck; card_idx++) {
             Card card = CreateCard(card_idx % 2 + 1);
             cards_.Add(card);

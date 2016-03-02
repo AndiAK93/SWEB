@@ -6,12 +6,17 @@ public class Player : MonoBehaviour {
     Hand hand_;
     Field field_;
     Player enemy_;
+    PlayerServer playerServer = null;
+    PlayerClient playerClient = null;
 
 	// Use this for initialization
 	void Start () {
         deck_ = GetComponentInChildren<Deck>();
         hand_ = GetComponentInChildren<Hand>();
         field_ = GetComponentInChildren<Field>();
+
+        if (Network.peerType == NetworkPeerType.Server) playerServer = GetComponent<PlayerServer>();
+        if (Network.peerType == NetworkPeerType.Client) playerClient = GetComponent<PlayerClient>();
     }
 
     public Deck GetDeck() {
@@ -24,6 +29,16 @@ public class Player : MonoBehaviour {
 
     public Field GetField() {
         return field_;
+    }
+
+    public PlayerServer GetPlayerServer()
+    {
+        return playerServer;
+    }
+
+    public PlayerClient GetPlayerClient()
+    {
+        return playerClient;
     }
 
     public void SetEnemy(Player enemy)

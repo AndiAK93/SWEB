@@ -62,6 +62,9 @@ public class Game : MonoBehaviour {
     }
 
     public void RoundEndButtonClicked() {
+        if (Network.peerType == NetworkPeerType.Server && cur_player_idx_ == 1) return;
+        if (Network.peerType == NetworkPeerType.Client && cur_player_idx_ == 0) return;
+
         Debug.Log("Round End Clicked!");
         cur_player_idx_ = (++cur_player_idx_) % 2;
         round_ = (++cycle_)/2;
@@ -70,6 +73,24 @@ public class Game : MonoBehaviour {
         // We have to update the fieldes
 
         for (int p_idx = 0; p_idx < 2; p_idx++) {
+            players_[p_idx].GetField().UpdateCards();
+        }
+
+        GetComponent<NetworkView>().RPC("EnemyEndButtonClicked", RPCMode.Others);
+    }
+
+    [RPC]
+    void EnemyEndButtonClicked()
+    {
+        Debug.Log("Round End Clicked!");
+        cur_player_idx_ = (++cur_player_idx_) % 2;
+        round_ = (++cycle_) / 2;
+        round_text_.text = round_.ToString();
+
+        // We have to update the fieldes
+
+        for (int p_idx = 0; p_idx < 2; p_idx++)
+        {
             players_[p_idx].GetField().UpdateCards();
         }
     }
