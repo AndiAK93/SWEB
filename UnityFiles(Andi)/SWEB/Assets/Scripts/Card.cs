@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.IO;
 
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
     public const int IDX_NAME_TEXT = 0;
@@ -22,11 +23,22 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     Player player_;
     CardLogic card_logic_;
 
+    Image image_;
+
     bool is_on_hand_;
 
     void Awake() {
+        Debug.Log("valled");
         card_name_text_ = GetComponentsInChildren<Text>()[Card.IDX_NAME_TEXT];
         card_description_text_ = GetComponentsInChildren<Text>()[Card.IDX_DESCRIPTION_TEXT];
+
+
+        Sprite sprite = Resources.Load<Sprite>("vwa2");
+        //myObject.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
+
+
+        image_ = GetComponentInChildren<Image>();
+        image_.overrideSprite = sprite;
         card_name_ = "";// card_logic_.GetType().ToString();
         card_description_ = "Description";
     }
