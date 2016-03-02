@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum CardType { Knowledge, Activity, Lecture };
+public enum CardType { Knowledge = 3, Activity = 1, Lecture = 2 };
 
 public abstract class CardLogic {
     public CardType type_;     //for effect
@@ -167,11 +167,13 @@ public class CardKnowledge : CardLogic {
 
 public class CardActivity : CardLogic {
     Effect effect_;
+    int cost_;
 
-    public CardActivity(Card card, Effect effect) {
+    public CardActivity(Card card, int cost, Effect effect) {
         card_ = card;
         type_ = CardType.Activity;
         effect_ = effect;
+        cost_ = cost;
     }
 
     public override Effect GetEffect() {
@@ -193,6 +195,8 @@ public class CardActivity : CardLogic {
         if (effect_this != null) {
             if (effect_this.ApplyEffect(this, target) == ReturnType.OK) {
                 this.RemoveCard();
+
+                this.card_.GetPlayer().ModifyHealth(-cost_);
 
                 target.Update();
                 return ReturnType.OK;

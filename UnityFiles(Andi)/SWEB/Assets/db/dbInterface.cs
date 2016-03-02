@@ -34,7 +34,6 @@ using System.Data;
 using System;
 using System.IO;
 
-
 public class card_t {
 	public int id_;
 	public string name_;
@@ -293,6 +292,8 @@ public class dbInterface {
 			card.CardRewardID_[i] = reader.GetInt32 (6);
 			card.cardType_ = 2;
 			i++;
+            if (i >= 2)
+                break;
 		}
 
 		reader.Close();

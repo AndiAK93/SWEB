@@ -23,6 +23,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
             player_.GetHand().RemoveCardFromHand(card);
             this.AddCardToField(card);
             card.PlayCard();
+            
         }
     }
 
@@ -48,7 +49,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
     }
 
     public void AddCardToField(Card card) {
-        Debug.Log("Added Card To Field " + card.name);
+        Debug.Log("Added Card To Field " + card.GetName());
         card.gameObject.transform.SetParent(this.transform);
         card.gameObject.SetActive(true);
         card.SetOnHand(false);
@@ -56,8 +57,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
     }
 
     public void RemoveCardFromField(Card card) {
-        Debug.Log("Removed Card From Field " + card.name);
+        Debug.Log("Removed Card From Field " + card.GetName());
         cards_.Remove(card);
     }
-
 }

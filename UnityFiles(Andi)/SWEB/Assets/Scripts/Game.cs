@@ -19,26 +19,32 @@ public class Game : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        // create data_base_ 
-        data_base_ = new dbInterface();
-
         game_ = this;
 
-        
+        data_base_ = new dbInterface();
 
         cycle_ = 2;
         round_ = 1;
+
         players_ = GetComponentsInChildren<Player>();
 
         players_[0].SetEnemy(players_[1]);
         players_[1].SetEnemy(players_[0]);
 
+        players_[0].GetDeck().CreateRandomDeck();
+        players_[1].GetDeck().CreateRandomDeck();
+
         cur_player_idx_ = 0;
+
         round_text_ = GetComponentsInChildren<Text>()[0];
         round_text_.text = round_.ToString();
 
         inspector_ = GetComponentInChildren<Inspector>();
         inspector_.HideInspector();
+    }
+
+    public dbInterface GetDataBank() {
+        return data_base_;
     }
 
     public static Game GetGame() {
@@ -71,7 +77,6 @@ public class Game : MonoBehaviour {
         round_text_.text = round_.ToString();
 
         // We have to update the fieldes
-
         for (int p_idx = 0; p_idx < 2; p_idx++) {
             players_[p_idx].GetField().UpdateCards();
         }
