@@ -40,11 +40,11 @@ public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerE
             {
                 children[i].gameObject.SetActive(false);
             }
-            card.GetComponent<LayoutElement>().preferredWidth = 75;
-            card.GetComponent<RectTransform>().sizeDelta = new Vector2(75, 100);
+            card.GetComponent<LayoutElement>().preferredWidth = 110;
+            card.GetComponent<RectTransform>().sizeDelta = new Vector2(110, 150);
             Transform background = card.GetComponentInChildren<Transform>().Find("BackGround");
             background.gameObject.SetActive(true);
-            background.GetComponent<RectTransform>().sizeDelta = new Vector2(75, 100);
+            background.GetComponent<RectTransform>().sizeDelta = new Vector2(110, 150);
 
             Sprite sprite = Resources.Load<Sprite>("card/card_back_b_t");
             card.GetComponentInChildren<Image>().overrideSprite = sprite;

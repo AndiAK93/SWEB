@@ -48,10 +48,10 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
         {
             children[i].gameObject.SetActive(true);
         }
-        card.GetComponent<LayoutElement>().preferredWidth = 120;
-        card.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 100);
+        card.GetComponent<LayoutElement>().preferredWidth = 180;
+        card.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 150);
         Transform background = card.GetComponentInChildren<Transform>().Find("BackGround");
-        background.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 100);
+        background.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 150);
 
         Sprite sprite = Resources.Load<Sprite>(card.image_name_);
         card.GetComponentInChildren<Image>().overrideSprite = sprite;
