@@ -110,7 +110,7 @@ public class Deck : MonoBehaviour {
     public void InitialDrawCardFromDeck()
     {
         Draw();
-        GetComponent<NetworkView>().RPC("EnemyDraw", RPCMode.Others);
+        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
     }
 
     [RPC]
@@ -124,16 +124,6 @@ public class Deck : MonoBehaviour {
         }
     }
 
-    [RPC]
-    public void EnemyDraw()
-    {
-        if (cards_.Count > 0)
-        {
-            Card card = cards_[0];
-            cards_.RemoveAt(0);
-            player_.GetHand().AddCardToHand(card);
-        }
-    }
 
     public void RemoveCardFromDeck(Card card) {
         cards_.Remove(card);

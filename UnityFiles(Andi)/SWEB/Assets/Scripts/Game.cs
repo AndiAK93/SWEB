@@ -46,6 +46,7 @@ public class Game : MonoBehaviour {
                 players_[0].GetDeck().InitialDrawCardFromDeck();
                 players_[1].GetDeck().InitialDrawCardFromDeck();
             }
+            players_[0].GetDeck().InitialDrawCardFromDeck();
         }       
 
         cur_player_idx_ = 0;
@@ -113,17 +114,20 @@ public class Game : MonoBehaviour {
     void EnemyEndButtonClicked()
     {
         Debug.Log("Round End Clicked!");
+
         cur_player_idx_ = (++cur_player_idx_) % 2;
         round_ = (++cycle_) / 2;
         round_text_.text = round_.ToString();
 
         // We have to update the fieldes
 
+        canDrawCard = true;
+        players_[cur_player_idx_].GetDeck().DrawCardFromDeck();
+
         for (int p_idx = 0; p_idx < 2; p_idx++)
         {
             players_[p_idx].GetField().UpdateCards();
-        }
-        canDrawCard = true;
+        }       
     }
 
     public bool IsMyTurn()
