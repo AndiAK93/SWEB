@@ -85,14 +85,15 @@ public class Game : MonoBehaviour {
         if (!IsMyTurn()) return;
 
         Debug.Log("Round End Clicked!");
-        cur_player_idx_ = (++cur_player_idx_) % 2;
+
         round_ = (++cycle_)/2;
         round_text_.text = round_.ToString();
 
         // We have to update the fieldes
-        for (int p_idx = 0; p_idx < 2; p_idx++) {
-            players_[p_idx].GetField().UpdateCards();
-        }
+        //for (int p_idx = 0; p_idx < 2; p_idx++) {
+        players_[cur_player_idx_].GetField().UpdateCards();
+        cur_player_idx_ = (++cur_player_idx_) % 2;
+        //}
 
         GetComponent<NetworkView>().RPC("EnemyEndButtonClicked", RPCMode.Others);
         canDrawCard = true;
@@ -113,16 +114,17 @@ public class Game : MonoBehaviour {
     void EnemyEndButtonClicked()
     {
         Debug.Log("Round End Clicked!");
-        cur_player_idx_ = (++cur_player_idx_) % 2;
+   
         round_ = (++cycle_) / 2;
         round_text_.text = round_.ToString();
 
         // We have to update the fieldes
-
-        for (int p_idx = 0; p_idx < 2; p_idx++)
-        {
-            players_[p_idx].GetField().UpdateCards();
-        }
+        
+        //for (int p_idx = 0; p_idx < 2; p_idx++)
+        //{
+            players_[cur_player_idx_].GetField().UpdateCards();
+        cur_player_idx_ = (++cur_player_idx_) % 2;
+        //}
         canDrawCard = true;
     }
 

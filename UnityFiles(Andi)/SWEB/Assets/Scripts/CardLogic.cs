@@ -54,7 +54,7 @@ public class CardKnowledge : CardLogic {
     Text name_text_;
     Text health_text_;
     Text attack_text_;
-
+    
     Image portrait_image_;
 
     Effect effect_ = null;
@@ -140,48 +140,53 @@ public class CardKnowledge : CardLogic {
     }
 
     public override ReturnType UseOn(CardLogic target) {
-        if (target.type_ != CardType.Knowledge) {
-            return ReturnType.NOT_POSSIBLE;
-        }
+        if (can_attack_)
+        {
+            if (target.type_ != CardType.Knowledge) {
+                return ReturnType.NOT_POSSIBLE;
+            }
 
-        Effect effect_target = target.GetEffect();
-        Effect effect_this = GetEffect();
+            Effect effect_target = target.GetEffect();
+            Effect effect_this = GetEffect();
 
-        ReturnType status_target = ReturnType.NONE;
-        ReturnType status_this = ReturnType.NONE;
+            ReturnType status_target = ReturnType.NONE;
+            ReturnType status_this = ReturnType.NONE;
 
-        // wenn die karte die ich angreife einen effect hat wende diesen auf die angreifende karte an
-        if (effect_target != null) {
-            status_target = effect_target.ApplyEffect(target, this);
-        }
+            // wenn die karte die ich angreife einen effect hat wende diesen auf die angreifende karte an
+            if (effect_target != null) {
+                status_target = effect_target.ApplyEffect(target, this);
+            }
 
-        // wenn die angreifende karte einen effekt hat wende diesen auf das target an
-        if (effect_this != null) {
-            status_this = effect_this.ApplyEffect(this, target);
-        }
+            // wenn die angreifende karte einen effekt hat wende diesen auf das target an
+            if (effect_this != null) {
+                status_this = effect_this.ApplyEffect(this, target);
+            }
 
-        // wenn beide karten ein schild haben was einen angriff komplet abwehrt
-        if (status_target == ReturnType.BLOCKED && status_this == ReturnType.BLOCKED) {
-            return ReturnType.OK;
-        }
-        // wenn nur der gegner ein schild hat
-        else if (status_target == ReturnType.BLOCKED) {
-            this.ModifyHealth(-target.GetAttack());
-            this.Update();
-            return ReturnType.OK;
-        } else if (status_this == ReturnType.BLOCKED) {
+            // wenn beide karten ein schild haben was einen angriff komplet abwehrt
+            if (status_target == ReturnType.BLOCKED && status_this == ReturnType.BLOCKED) {
+                return ReturnType.OK;
+            }
+            // wenn nur der gegner ein schild hat
+            else if (status_target == ReturnType.BLOCKED) {
+                this.ModifyHealth(-target.GetAttack());
+                this.Update();
+                return ReturnType.OK;
+            } else if (status_this == ReturnType.BLOCKED) {
+                target.ModifyHealth(-this.GetAttack());
+                target.Update();
+                return ReturnType.OK;
+            }
+
+            // do the base calcs
             target.ModifyHealth(-this.GetAttack());
+            this.ModifyHealth(-target.GetAttack());
+
             target.Update();
+            this.Update();
+            can_attack_ = false;
             return ReturnType.OK;
         }
-
-        // do the base calcs
-        target.ModifyHealth(-this.GetAttack());
-        this.ModifyHealth(-target.GetAttack());
-
-        target.Update();
-        this.Update();
-        return ReturnType.OK;
+        return ReturnType.NOT_POSSIBLE;
     }
 
     public override bool CanBeUsedFromHand() {

@@ -152,10 +152,12 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         return card_logic_.CanBePutOnField();
     }
 
-    public void Update() {
+    public void RefreshCard() {
         if (card_logic_ != null)
             card_logic_.Update();
     }
+
+    public void Update() { }
 
     public ReturnType PlayCard() {
         return card_logic_.PlayCard();

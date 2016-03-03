@@ -82,7 +82,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
 
     public void UpdateCards() {
         for (int card_idx = 0; card_idx < cards_.Count; card_idx++) {
-            cards_[card_idx].Update();
+            cards_[card_idx].RefreshCard();
         }
     }
 
