@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
@@ -32,6 +32,24 @@ public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerE
     public void AddCardToHand(Card card) {
         Debug.Log("Added Card To Hand " + card.GetName());
         card.gameObject.transform.SetParent(this.transform);
+
+        if (!card.IsMyCard())
+        {
+            Transform[] children = card.GetComponentsInChildren<Transform>();
+            for (int i = 0; i < children.Length; i++)
+            {
+                children[i].gameObject.SetActive(false);
+            }
+            card.GetComponent<LayoutElement>().preferredWidth = 75;
+            card.GetComponent<RectTransform>().sizeDelta = new Vector2(75, 100);
+            Transform background = card.GetComponentInChildren<Transform>().Find("BackGround");
+            background.gameObject.SetActive(true);
+            background.GetComponent<RectTransform>().sizeDelta = new Vector2(75, 100);
+
+            Sprite sprite = Resources.Load<Sprite>("card/card_back_b_t");
+            card.GetComponentInChildren<Image>().overrideSprite = sprite;
+        }
+
         card.gameObject.SetActive(true);
         card.SetOnHand(true);
         cards_.Add(card);

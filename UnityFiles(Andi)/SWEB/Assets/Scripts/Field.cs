@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
@@ -41,6 +41,22 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
 
         card.SetParentToReturnTo(this.transform);
         player_.GetHand().RemoveCardFromHand(card);
+
+        // -
+        Transform[] children = card.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < children.Length; i++)
+        {
+            children[i].gameObject.SetActive(true);
+        }
+        card.GetComponent<LayoutElement>().preferredWidth = 120;
+        card.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 100);
+        Transform background = card.GetComponentInChildren<Transform>().Find("BackGround");
+        background.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 100);
+
+        Sprite sprite = Resources.Load<Sprite>(card.image_name_);
+        card.GetComponentInChildren<Image>().overrideSprite = sprite;
+        // -
+
         this.AddCardToField(card);
         card.PlayCard();
     }

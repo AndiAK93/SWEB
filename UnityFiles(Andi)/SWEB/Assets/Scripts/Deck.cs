@@ -93,11 +93,22 @@ public class Deck : MonoBehaviour {
     public void InitialDrawCardFromDeck()
     {
         Draw();
-        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
+        GetComponent<NetworkView>().RPC("EnemyDraw", RPCMode.Others);
     }
 
     [RPC]
     public void Draw()
+    {
+        if (cards_.Count > 0)
+        {
+            Card card = cards_[0];
+            cards_.RemoveAt(0);
+            player_.GetHand().AddCardToHand(card);
+        }
+    }
+
+    [RPC]
+    public void EnemyDraw()
     {
         if (cards_.Count > 0)
         {

@@ -26,6 +26,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     CardLogic card_logic_;
 
     Image image_;
+    public String image_name_ = "";
 
     bool is_on_hand_;
 
@@ -37,9 +38,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         if (images.Length >= 2) {
             image_ = images[1];
 
-
-
-            Sprite sprite = Resources.Load<Sprite>("card/card_front");
+            image_name_ = "card/card_front";
+            Sprite sprite = Resources.Load<Sprite>(image_name_);
+             
             //myObject.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
             image_.overrideSprite = sprite;
         }
