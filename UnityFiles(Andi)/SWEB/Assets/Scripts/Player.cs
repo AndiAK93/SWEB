@@ -63,6 +63,40 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void EnemyUseOnPlayer(int unique_id)
+    {
+        GetComponent<NetworkView>().RPC("SyncPlayerUse", RPCMode.Others, unique_id);
+    }
+
+    [RPC]
+    private void SyncPlayerUse(int unique_id)
+    {
+        Card source = null;
+        Field enemyField = GetEnemy().GetField();
+        Field myField = GetField();
+        Hand enemyHand = GetEnemy().GetHand();
+
+        for (int i = 0; i < enemyHand.cards_.Count; i++)
+        {
+            if (enemyHand.cards_[i].GetUniqueId() == unique_id) source = enemyHand.cards_[i];
+        }
+        for (int i = 0; i < enemyField.cards_.Count; i++)
+        {
+            if (enemyField.cards_[i].GetUniqueId() == unique_id) source = enemyField.cards_[i];
+        }
+        for (int i = 0; i < myField.cards_.Count; i++)
+        {
+            if (myField.cards_[i].GetUniqueId() == unique_id) source = myField.cards_[i];
+        }
+
+
+        ReturnType status = source.GetCardLogic().UseOn(this);
+        if (status != ReturnType.NOT_POSSIBLE)
+        {
+            Debug.Log("Card " + name + " is used on Player " + this.name);
+        }
+    }
+
     public void EnemyLeftRewardPressed(int unique_id)
     {
         GetComponent<NetworkView>().RPC("SyncLeftRewardPressed", RPCMode.Others, unique_id);

@@ -177,6 +177,16 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {		
         Debug.Log("Card " + name + " is used on Player " + target.name);
         ReturnType status = card_logic_.UseOn(target);
+
+        if(target == player_)
+        {
+            player_.EnemyUseOnPlayer(GetUniqueId());
+        }
+        else
+        {
+            player_.GetEnemy().EnemyUseOnPlayer(GetUniqueId());
+        }    
+
         if (status != ReturnType.NOT_POSSIBLE)
         {
 			playAttackSound ();
