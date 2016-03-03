@@ -30,12 +30,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
         }
     }
 
-	private void playDropSound(){
-		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
-		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-		audioSource.clip = Resources.Load ("sound/click3") as AudioClip;
-		audioSource.PlayOneShot (audioSource.clip, 0.4f);
-	}
+
 
     [RPC]
     void EnemyPlayCard(int unique_id)
@@ -87,21 +82,15 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
         card.gameObject.SetActive(true);
         card.SetOnHand(false);
         cards_.Add(card);
-		playDropSound ();
+		Game.GetGame().playDropSound ();
     }
 
     public void RemoveCardFromField(Card card) {
         Debug.Log("Removed Card From Field " + card.GetName());
         cards_.Remove(card);
-		playDestroySound ();
+		Game.GetGame().playDestroySound ();
     }
 
-	private void playDestroySound()
-	{
-		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
-		audioSource.clip = Resources.Load ("sound/kill2") as AudioClip;
-		audioSource.PlayOneShot (audioSource.clip, 0.4f);
-	}
+
 
 }

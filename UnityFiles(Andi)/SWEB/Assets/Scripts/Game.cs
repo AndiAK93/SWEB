@@ -22,6 +22,8 @@ public class Game : MonoBehaviour {
 
     dbInterface data_base_;
 
+	AudioSource audioSource;
+
     // Use this for initialization
     void Start() {
         game_ = this;
@@ -55,6 +57,7 @@ public class Game : MonoBehaviour {
 
         inspector_ = GetComponentInChildren<Inspector>();
         inspector_.HideInspector();
+		audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public dbInterface GetDataBank() {
@@ -99,14 +102,45 @@ public class Game : MonoBehaviour {
 		playRoundEndSound ();
     }
 
-	private void playRoundEndSound()
+	public void playRoundEndSound()
 	{
-		Debug.Log ("play draw start");
-		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-		//AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
 		audioSource.clip = Resources.Load ("sound/effect1") as AudioClip;
 		audioSource.PlayOneShot (audioSource.clip, 0.8f);
-		Debug.Log ("play draw end");
+	}
+
+	public void playAttackSound()
+	{
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/attack2") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+	} 
+
+	public void playDropSound(){
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/click3") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+	}
+
+	public void playDestroySound()
+	{
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/kill2") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+	}
+
+	public void playDrawSound()
+	{
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/draw1") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+	}
+
+	public void playHealSound()
+	{
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/heal") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
 	}
 
     [RPC]
@@ -124,6 +158,7 @@ public class Game : MonoBehaviour {
             players_[p_idx].GetField().UpdateCards();
         }
         canDrawCard = true;
+		playRoundEndSound ();
     }
 
     public bool IsMyTurn()

@@ -174,6 +174,8 @@ public class CardKnowledge : CardLogic {
 
         target.Update();
         this.Update();
+
+
         return ReturnType.OK;
     }
 
