@@ -57,6 +57,7 @@ public class Deck : MonoBehaviour {
                 actionCard_t a = (actionCard_t)db_card;
                 card.SetCardLogic(new CardActivity(card, a.cost_, Effect.CreateEffect(a.effectType_, a.effectValue_)));
                 card.SetImagePath(db_card.image_, "");
+                card.SetDescription(a.description_);
                 break;
 
             case (int)CardType.Lecture:

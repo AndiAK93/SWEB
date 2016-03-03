@@ -49,7 +49,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         }
 
         card_name_ = "";// card_logic_.GetType().ToString();
-        card_description_ = "Description";
+        card_description_ = "";
 		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
     }
 
