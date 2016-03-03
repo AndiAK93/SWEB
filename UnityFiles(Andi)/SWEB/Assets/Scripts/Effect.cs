@@ -16,28 +16,34 @@ public class Effect {
     public static Effect CreateEffect(string effect_name, int effect_value)
     {
         switch (effect_name) {
-            case "lv_counter":          return new EffectModifyDuration(effect_value);
-            case "swap_card":           break;
-            case "destroy_lv_card":     return new EffectDestroyLVCard();
-            case "get_card_from_deck":  break;
-            case "modify_attack":       return new EffectModifyAttack(effect_value);
-            case "modify_defense":      return new EffectModifyHealth(effect_value);
-            case "modify_ects":         return new EffectModifyEcts(effect_value);
-            case "modify_defense_all":
-                break;
-
-            case "switch_attack_defense":
-                break;
-
-            case "encrypt":
-                break;
-
-            case "spawn_card":
-                break;
+            case "lv_counter":              return new EffectModifyDuration(effect_value);
+            case "swap_card":               break;
+            case "destroy_lv_card":         return new EffectDestroyLVCard();
+            case "get_card_from_deck":      break;
+            case "modify_attack":           return new EffectModifyAttack(effect_value);
+            case "modify_defense":          return new EffectModifyHealth(effect_value);
+            case "modify_ects":             return new EffectModifyEcts(effect_value);
+            case "modify_defense_all":      return new EffectModifyDefenseAll(effect_value);
+            case "switch_attack_defense":   return new EffectSwitchAtkWithDef();
+            case "encrypt":                 break;
+            case "spawn_card":              return new EffectSpawnCard(effect_value);
         }
         return null;
     }
 
+}
+
+public class EffectSwitchAtkWithDef : Effect
+{
+    public override ReturnType ApplyEffect(CardLogic from, CardLogic target)
+    {
+        int old_atk = target.GetAttack();
+        int old_def = target.GetHealth();
+        target.SetAttack(old_def);
+        target.SetHealth(old_atk);
+        target.RefreshVisuals();
+        return ReturnType.OK;
+    }
 }
 
 public class EffectModifyDuration : Effect {
@@ -99,6 +105,23 @@ public class EffectModifyHealth : Effect
     {
         target.ModifyHealth(value_);
         target.RefreshVisuals();
+        return ReturnType.OK;
+    }
+}
+
+public class EffectModifyDefenseAll : Effect
+{
+    public EffectModifyDefenseAll(int value)
+    {
+        value_ = value;
+    }
+
+    public override ReturnType ApplyEffect(CardLogic from, Player target)
+    {
+        foreach (Card c in target.GetField().cards_) {
+            c.GetCardLogic().ModifyHealth(value_);
+            c.GetCardLogic().RefreshVisuals();
+        }
         return ReturnType.OK;
     }
 }

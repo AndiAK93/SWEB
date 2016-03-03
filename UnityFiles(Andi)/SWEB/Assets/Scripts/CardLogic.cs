@@ -28,6 +28,9 @@ public abstract class CardLogic {
     public virtual int GetAttack() { return 0; }
     public virtual int GetHealth() { return 0; }
 
+    public virtual void SetAttack(int atk) {  }
+    public virtual void SetHealth(int health) {  }
+
     // for lecture
     public virtual ReturnType ModifyDuration(int mod) { return ReturnType.NOT_POSSIBLE; }
 
@@ -95,6 +98,9 @@ public class CardKnowledge : CardLogic {
     public override int GetAttack() { return attack_; }
     public override int GetHealth() { return health_; }
 
+    public override void SetAttack(int atk) { attack_ = atk; }
+    public override void SetHealth(int health) { health_ = health; }
+
     public override ReturnType ModifyHealth(int mod) {
         health_ += mod;
         health_text_.text = health_.ToString();
@@ -112,7 +118,18 @@ public class CardKnowledge : CardLogic {
     }
 
     public override ReturnType UseOn(Player player) {
-        return ReturnType.NOT_POSSIBLE;
+        Effect effect_this = GetEffect();
+        ReturnType status_this = ReturnType.NONE;
+
+        if (effect_this != null)
+        {
+            status_this = effect_this.ApplyEffect(this, player);
+        }
+
+        player.ModifyHealth(-attack_);
+        player.RefreshVisuals();
+
+        return ReturnType.OK;
     }
 
     public override ReturnType UseOn(CardLogic target) {
