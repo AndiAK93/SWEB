@@ -25,7 +25,7 @@ public class PlayerServer : MonoBehaviour {
 
     void OnGUI()
     {
-        if (Network.peerType == NetworkPeerType.Server)
-            GUI.Label(new Rect(10, 400, 200, 25), "Cards in Deck: " + player_.GetDeck().cards_.Count);
+        //if (Network.peerType == NetworkPeerType.Server)
+            //GUI.Label(new Rect(10, 400, 200, 25), "Cards in Deck: " + player_.GetDeck().cards_.Count);
     }
 }
