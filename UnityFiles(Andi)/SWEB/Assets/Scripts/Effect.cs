@@ -16,14 +16,13 @@ public class Effect {
     public static Effect CreateEffect(string effect_name, int effect_value)
     {
         switch (effect_name) {
-            case "lv_counter":  return new EffectModifyDuration(effect_value);
-            case "swap_card": break;
-            case "destroy_lv_card": return new EffectDestroyLVCard();
-            case "get_card_from_deck": break;
-            case "modify_attack": break;
-            case "modify_defense": break;
-            case "modify_ects": return new EffectModifyEcts(effect_value);
-
+            case "lv_counter":          return new EffectModifyDuration(effect_value);
+            case "swap_card":           break;
+            case "destroy_lv_card":     return new EffectDestroyLVCard();
+            case "get_card_from_deck":  break;
+            case "modify_attack":       return new EffectModifyAttack(effect_value);
+            case "modify_defense":      return new EffectModifyHealth(effect_value);
+            case "modify_ects":         return new EffectModifyEcts(effect_value);
             case "modify_defense_all":
                 break;
 
@@ -49,10 +48,9 @@ public class EffectModifyDuration : Effect {
 
     public override ReturnType ApplyEffect(CardLogic from, CardLogic target)
     {
-        return target.IncDuration(value_);
+        return target.ModifyDuration(value_);
     }
 }
-
 
 public class EffectDestroyLVCard : Effect {
     public override ReturnType ApplyEffect(CardLogic from, CardLogic target)
@@ -63,8 +61,7 @@ public class EffectDestroyLVCard : Effect {
 }
 
 
-public class EffectModifyEcts : Effect
-{
+public class EffectModifyEcts : Effect {
     public EffectModifyEcts(int value) {
         value_ = value;
     }
@@ -77,9 +74,36 @@ public class EffectModifyEcts : Effect
     }
 }
 
+public class EffectModifyAttack : Effect {
+    public EffectModifyAttack(int value)
+    {
+        value_ = value;
+    }
+
+    public override ReturnType ApplyEffect(CardLogic from, CardLogic target)
+    {
+        target.ModifyAttack(value_);
+        target.RefreshVisuals();
+        return ReturnType.OK;
+    }
+}
+
+public class EffectModifyHealth : Effect
+{
+    public EffectModifyHealth(int value)
+    {
+        value_ = value;
+    }
+
+    public override ReturnType ApplyEffect(CardLogic from, CardLogic target)
+    {
+        target.ModifyHealth(value_);
+        target.RefreshVisuals();
+        return ReturnType.OK;
+    }
+}
 
 public class EffectSpawnCard : Effect {
-
     public EffectSpawnCard(int id) {
         value_ = id;
     }
@@ -94,15 +118,13 @@ public class EffectSpawnCard : Effect {
                 break;
 
             case (int)CardType.Activity:
-                target.GetHand().AddCardToHand(card);
+                //target.GetHand().AddCardToHand(card);
                 card.UseOn(target);
                 break;
 
             case (int)CardType.Lecture:
-                
                 break;
         }
-
 
         return ReturnType.OK;
     }

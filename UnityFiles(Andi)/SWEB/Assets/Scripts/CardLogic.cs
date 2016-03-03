@@ -22,17 +22,14 @@ public abstract class CardLogic {
     public abstract bool CanBePutOnField();
 
     // for knowledge
-    public virtual ReturnType IncHealth(int inc) { return ReturnType.NOT_POSSIBLE; }
-    public virtual ReturnType DecHealth(int dec) { return ReturnType.NOT_POSSIBLE; }
-    public virtual ReturnType IncAttack(int inc) { return ReturnType.NOT_POSSIBLE; }
-    public virtual ReturnType DecAttack(int dec) { return ReturnType.NOT_POSSIBLE; }
+    public virtual ReturnType ModifyHealth(int mod) { return ReturnType.NOT_POSSIBLE; }
+    public virtual ReturnType ModifyAttack(int mod) { return ReturnType.NOT_POSSIBLE; }
 
     public virtual int GetAttack() { return 0; }
     public virtual int GetHealth() { return 0; }
 
     // for lecture
-    public virtual ReturnType IncDuration(int inc) { return ReturnType.NOT_POSSIBLE; }
-    public virtual ReturnType DecDuration(int dec) { return ReturnType.NOT_POSSIBLE; }
+    public virtual ReturnType ModifyDuration(int mod) { return ReturnType.NOT_POSSIBLE; }
 
     // this function updates the card, wenn sie gekilled wurde bzw fertig ist etc
     public virtual void Update() { }
@@ -82,7 +79,7 @@ public class CardKnowledge : CardLogic {
         name_text_.text = card_.card_name_;
         attack_text_.text = attack_.ToString();
         health_text_.text = health_.ToString();
-        portrait_image_.overrideSprite = Resources.Load<Sprite>(card_.image_name_);
+        portrait_image_.overrideSprite = Resources.Load<Sprite>(card_.image_left_);
     }
 
     public override Effect GetEffect() {
@@ -98,26 +95,14 @@ public class CardKnowledge : CardLogic {
     public override int GetAttack() { return attack_; }
     public override int GetHealth() { return health_; }
 
-    public override ReturnType IncHealth(int inc) {
-        health_ += inc;
+    public override ReturnType ModifyHealth(int mod) {
+        health_ += mod;
         health_text_.text = health_.ToString();
         return ReturnType.OK;
     }
 
-    public override ReturnType DecHealth(int dec) {
-        health_ -= dec;
-        health_text_.text = health_.ToString();
-        return ReturnType.OK;
-    }
-
-    public override ReturnType IncAttack(int inc) {
-        attack_ += inc;
-        attack_text_.text = attack_.ToString();
-        return ReturnType.OK;
-    }
-
-    public override ReturnType DecAttack(int dec) {
-        attack_ -= dec;
+    public override ReturnType ModifyAttack(int mod) {
+        attack_ += mod;
         attack_text_.text = attack_.ToString();
         return ReturnType.OK;
     }
@@ -157,18 +142,18 @@ public class CardKnowledge : CardLogic {
         }
         // wenn nur der gegner ein schild hat
         else if (status_target == ReturnType.BLOCKED) {
-            this.DecHealth(target.GetAttack());
+            this.ModifyHealth(-target.GetAttack());
             this.Update();
             return ReturnType.OK;
         } else if (status_this == ReturnType.BLOCKED) {
-            target.DecHealth(this.GetAttack());
+            target.ModifyHealth(-this.GetAttack());
             target.Update();
             return ReturnType.OK;
         }
 
         // do the base calcs
-        target.DecHealth(this.GetAttack());
-        this.DecHealth(target.GetAttack());
+        target.ModifyHealth(-this.GetAttack());
+        this.ModifyHealth(-target.GetAttack());
 
         target.Update();
         this.Update();
@@ -207,7 +192,7 @@ public class CardActivity : CardLogic {
 
     public override void RefreshVisuals()
     {
-        portrait_image_.overrideSprite = Resources.Load<Sprite>(card_.image_name_);
+        portrait_image_.overrideSprite = Resources.Load<Sprite>(card_.image_left_);
         name_text_.text = card_.card_name_;
         cost_text_.text = cost_.ToString();
     }
@@ -308,8 +293,8 @@ public class CardLecture : CardLogic {
         duration_text_.text = duration_.ToString();
         min_round_text_.text = min_round_.ToString();
 
-        portrait_left_btn_.image.overrideSprite = Resources.Load<Sprite>(card_.image_name_);
-        portrait_right_btn_.image.overrideSprite = Resources.Load<Sprite>(card_.image_name_2_);
+        portrait_left_btn_.image.overrideSprite = Resources.Load<Sprite>(card_.image_left_);
+        portrait_right_btn_.image.overrideSprite = Resources.Load<Sprite>(card_.image_right_);
     }
 
     public override void Update() {
@@ -331,14 +316,8 @@ public class CardLecture : CardLogic {
         this.RemoveCard();
     }
 
-    public override ReturnType IncDuration(int inc) {
-        duration_ += inc;
-        duration_text_.text = duration_.ToString();
-        return ReturnType.OK;
-    }
-
-    public override ReturnType DecDuration(int dec) {
-        duration_ -= dec;
+    public override ReturnType ModifyDuration(int mod) {
+        duration_ += mod;
         duration_text_.text = duration_.ToString();
         return ReturnType.OK;
     }

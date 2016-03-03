@@ -27,7 +27,10 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     Image image_;
     public String image_name_ = "";
-    public String image_name_2_ = "";
+
+    public String image_left_ = "";
+
+    public String image_right_ = "";
 
     bool is_on_hand_;
 
@@ -36,23 +39,26 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         //card_description_text_ = GetComponentsInChildren<Text>()[Card.IDX_DESCRIPTION_TEXT];
 
         Image[] images = GetComponentsInChildren<Image>();
-        if (images.Length >= 2) {
-            image_ = images[1];
-
-            image_name_ = "card/card_front";
-            Sprite sprite = Resources.Load<Sprite>(image_name_);
-             
-            //myObject.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
-            image_.overrideSprite = sprite;
+        if (images.Length >= 2)
+        {
+            image_name_ = "card/card_front_lvk";
+        }
+        else {
+            image_name_ = "card/card_front_wk_ak";
         }
 
         card_name_ = "";// card_logic_.GetType().ToString();
         card_description_ = "Description";
     }
 
-    public void SetImagePath(string path, string path2) {
+    public void SetBackGroundImage(string path)
+    {
         image_name_ = path;
-        image_name_2_ = path2;
+    }
+
+    public void SetImagePath(string path, string path2) {
+        image_left_ = path;
+        image_right_ = path2;
         card_logic_.RefreshVisuals();
     }
 
