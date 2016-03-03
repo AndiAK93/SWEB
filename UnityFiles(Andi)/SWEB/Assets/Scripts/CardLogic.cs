@@ -220,7 +220,19 @@ public class CardActivity : CardLogic {
         return ReturnType.NOT_POSSIBLE;
     }
 
-    public override ReturnType UseOn(Player player) {
+    public override ReturnType UseOn(Player player)
+    {
+        Effect effect_this = GetEffect();
+        if (effect_this != null)
+        {
+            if (effect_this.ApplyEffect(this, player) == ReturnType.OK)
+            {
+                this.RemoveCard();
+                this.card_.GetPlayer().ModifyHealth(cost_);
+                this.card_.GetPlayer().RefreshVisuals();
+                return ReturnType.OK;
+            }
+        }
         return ReturnType.NOT_POSSIBLE;
     }
 
@@ -232,8 +244,8 @@ public class CardActivity : CardLogic {
             if (effect_this.ApplyEffect(this, target) == ReturnType.OK) {
                 this.RemoveCard();
 
-                this.card_.GetPlayer().ModifyHealth(-cost_);
-
+                this.card_.GetPlayer().ModifyHealth(cost_);
+                this.card_.GetPlayer().RefreshVisuals();
                 target.Update();
                 return ReturnType.OK;
             }  

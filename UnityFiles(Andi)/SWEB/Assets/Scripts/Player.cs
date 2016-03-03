@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
     Deck deck_;
@@ -11,12 +12,14 @@ public class Player : MonoBehaviour {
 
     int health_;
 
-
+    Text ects_text_;
 	// Use this for initialization
 	void Start () {
         deck_ = GetComponentInChildren<Deck>();
         hand_ = GetComponentInChildren<Hand>();
         field_ = GetComponentInChildren<Field>();
+        ects_text_ = GetComponentInChildren<Text>();
+        health_ = 20;
 
         if (Network.peerType == NetworkPeerType.Server) playerServer = GetComponent<PlayerServer>();
         if (Network.peerType == NetworkPeerType.Client) playerClient = GetComponent<PlayerClient>();
@@ -93,5 +96,9 @@ public class Player : MonoBehaviour {
 
     public void ModifyHealth(int mod) {
         health_ += mod;
+    }
+
+    public void RefreshVisuals() {
+        ects_text_.text = health_.ToString();
     }
 }
