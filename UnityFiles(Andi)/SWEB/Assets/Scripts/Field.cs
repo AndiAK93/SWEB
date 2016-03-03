@@ -21,12 +21,14 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
        
         if (card != null && player_ == card.GetPlayer() && card.IsOnHand() && card.CanBePutOnField()) {
             if (!Game.GetGame().IsMyTurn() || !card.IsMyCard()) return;
-            GetComponent<NetworkView>().RPC("EnemyPlayCard", RPCMode.Others, card.GetUniqueId());
-            Debug.Log(eventData.pointerDrag.name + " was dropped on " + gameObject.name);
-            card.SetParentToReturnTo(this.transform);
-            player_.GetHand().RemoveCardFromHand(card);
-            this.AddCardToField(card);
-            card.PlayCard();   
+            if (card.PlayCard() == ReturnType.OK)
+            {
+                GetComponent<NetworkView>().RPC("EnemyPlayCard", RPCMode.Others, card.GetUniqueId());
+                Debug.Log(eventData.pointerDrag.name + " was dropped on " + gameObject.name);
+                card.SetParentToReturnTo(this.transform);
+                player_.GetHand().RemoveCardFromHand(card);
+                this.AddCardToField(card);
+            }
         }
     }
 
@@ -42,26 +44,29 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
             if (hand_cards[i].GetUniqueId() == unique_id) card = hand_cards[i];
         }
 
-        card.SetParentToReturnTo(this.transform);
-        player_.GetHand().RemoveCardFromHand(card);
-
-        // -
-        Transform[] children = card.GetComponentsInChildren<Transform>(true);
-        for (int i = 0; i < children.Length; i++)
+        if (card.PlayCard() == ReturnType.OK)
         {
-            children[i].gameObject.SetActive(true);
+            card.SetParentToReturnTo(this.transform);
+            player_.GetHand().RemoveCardFromHand(card);
+
+            // -
+            Transform[] children = card.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < children.Length; i++)
+            {
+                children[i].gameObject.SetActive(true);
+            }
+            card.GetComponent<LayoutElement>().preferredWidth = 180;
+            card.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 150);
+            Transform background = card.GetComponentInChildren<Transform>().Find("BackGround");
+            background.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 150);
+
+            Sprite sprite = Resources.Load<Sprite>(card.image_name_);
+            card.GetComponentInChildren<Image>().overrideSprite = sprite;
+            // -
+
+            this.AddCardToField(card);
         }
-        card.GetComponent<LayoutElement>().preferredWidth = 180;
-        card.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 150);
-        Transform background = card.GetComponentInChildren<Transform>().Find("BackGround");
-        background.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 150);
 
-        Sprite sprite = Resources.Load<Sprite>(card.image_name_);
-        card.GetComponentInChildren<Image>().overrideSprite = sprite;
-        // -
-
-        this.AddCardToField(card);
-        card.PlayCard();
     }
 
     public void OnPointerEnter(PointerEventData eventData) {

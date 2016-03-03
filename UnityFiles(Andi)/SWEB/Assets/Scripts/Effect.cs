@@ -19,7 +19,7 @@ public class Effect {
             case "lv_counter":              return new EffectModifyDuration(effect_value);
             case "swap_card":               break;
             case "destroy_lv_card":         return new EffectDestroyLVCard();
-            case "get_card_from_deck":      break;
+            case "get_card_from_deck":      return new EffectDrawRandomCard();
             case "modify_attack":           return new EffectModifyAttack(effect_value);
             case "modify_defense":          return new EffectModifyHealth(effect_value);
             case "modify_ects":             return new EffectModifyEcts(effect_value);
@@ -119,9 +119,20 @@ public class EffectModifyDefenseAll : Effect
     public override ReturnType ApplyEffect(CardLogic from, Player target)
     {
         foreach (Card c in target.GetField().cards_) {
-            c.GetCardLogic().ModifyHealth(value_);
+            c.GetCardLogic().ModifyHealth(-value_);
             c.GetCardLogic().RefreshVisuals();
         }
+        return ReturnType.OK;
+    }
+}
+
+public class EffectDrawRandomCard : Effect
+{
+    public override ReturnType ApplyEffect(CardLogic from, Player target)
+    {
+        card_t db_card = Game.GetGame().GetDataBank().getRandomCard();
+        Card card = target.GetDeck().CreateCard(db_card);
+        target.GetHand().AddCardToHand(card);
         return ReturnType.OK;
     }
 }

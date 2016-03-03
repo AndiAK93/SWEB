@@ -59,7 +59,10 @@ public class CardKnowledge : CardLogic {
 
     Effect effect_ = null;
 
+    bool can_attack_;
+
     public CardKnowledge(Card card, int attack, int health, Effect effect) {
+        can_attack_ = true;
         card_ = card;
         type_ = CardType.Knowledge;
         attack_ = attack;
@@ -93,6 +96,7 @@ public class CardKnowledge : CardLogic {
         if (health_ <= 0) {
             RemoveCard();
         }
+        can_attack_ = true;
     }
 
     public override int GetAttack() { return attack_; }
@@ -118,17 +122,20 @@ public class CardKnowledge : CardLogic {
     }
 
     public override ReturnType UseOn(Player player) {
-        Effect effect_this = GetEffect();
-        ReturnType status_this = ReturnType.NONE;
-
-        if (effect_this != null)
+        if (can_attack_)
         {
-            status_this = effect_this.ApplyEffect(this, player);
+            Effect effect_this = GetEffect();
+            ReturnType status_this = ReturnType.NONE;
+
+            if (effect_this != null)
+            {
+                status_this = effect_this.ApplyEffect(this, player);
+            }
+
+            player.ModifyHealth(-attack_);
+            player.RefreshVisuals();
+            can_attack_ = false;
         }
-
-        player.ModifyHealth(-attack_);
-        player.RefreshVisuals();
-
         return ReturnType.OK;
     }
 
@@ -191,7 +198,6 @@ public class CardKnowledge : CardLogic {
 public class CardActivity : CardLogic {
     Effect effect_;
     int cost_;
-
 
     Text name_text_;
     Text cost_text_;
@@ -280,7 +286,7 @@ public class CardLecture : CardLogic {
     Text duration_text_;
     Text min_round_text_;
 
-
+    Image background_image_;
     Button portrait_left_btn_;
     Button portrait_right_btn_;
 
@@ -302,6 +308,8 @@ public class CardLecture : CardLogic {
         portrait_left_btn_ = card.GetComponentsInChildren<Button>()[0];
         portrait_right_btn_ = card.GetComponentsInChildren<Button>()[1];
 
+        background_image_ = card.GetComponentsInChildren<Image>()[0];
+
         portrait_left_btn_.interactable = false;
         portrait_right_btn_.interactable = false;
     }
@@ -320,6 +328,7 @@ public class CardLecture : CardLogic {
         if (played_in_round_ != -1 && Game.GetGame().GetRound() >= (played_in_round_ + duration_)) {
             portrait_left_btn_.interactable = true;
             portrait_right_btn_.interactable = true;
+            background_image_.color = Color.yellow;
         }
     }
 
@@ -350,9 +359,13 @@ public class CardLecture : CardLogic {
     }
 
     public override ReturnType PlayCard() {
-        played_in_round_ = Game.GetGame().GetRound();
-        this.Update();
-        return ReturnType.OK;
+        if (Game.GetGame().GetRound() >= min_round_)
+        {
+            played_in_round_ = Game.GetGame().GetRound();
+            this.Update();
+            return ReturnType.OK;
+        }
+        return ReturnType.NOT_POSSIBLE;
     }
 
     public override bool CanBeUsedFromHand() {
