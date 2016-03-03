@@ -7,11 +7,12 @@ public class Inspector : MonoBehaviour {
     Text card_name_;
     Text card_description_;
 
-	// Use this for initialization
-	void Start () {
-        //this.gameObject.SetActive(false);
+    // Use this for initialization
+    void Start () {
         card_name_ = GetComponentsInChildren<Text>()[0];
         card_description_ = GetComponentsInChildren<Text>()[1];
+        RectTransform rec_trans = GetComponent<RectTransform>();
+       // rec_trans.sizeDelta = new Vector2(rec_trans.sizeDelta.x, Screen.height / 2);
 	}
 	
 	// Update is called once per frame
