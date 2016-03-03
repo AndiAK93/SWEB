@@ -57,8 +57,8 @@ public class CardKnowledge : CardLogic {
         attack_ = attack;
         health_ = health;
 
-        attack_text_ = card.GetComponentsInChildren<Text>()[Card.IDX_ATTACK_TEXT];
-        health_text_ = card.GetComponentsInChildren<Text>()[Card.IDX_HEALTH_TEXT];
+        health_text_ = card.GetComponentsInChildren<Text>()[1];
+        attack_text_ = card.GetComponentsInChildren<Text>()[2];
 
         effect_ = effect;
 

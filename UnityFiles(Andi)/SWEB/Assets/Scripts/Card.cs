@@ -190,12 +190,15 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         this.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
-    public void OnDrop(PointerEventData eventData) {
-        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+    public void OnDrop(PointerEventData eventData)
+    {
         Card dragged = eventData.pointerDrag.GetComponent<Card>();
-        if (dragged != null) {
+        if (!Game.GetGame().IsMyTurn() || !dragged.IsMyCard()) return;
+        if (dragged != null)
+        {
             Card droped_onto = this;
-            if (dragged != droped_onto && !droped_onto.IsOnHand() && (!dragged.IsOnHand() || (dragged.IsOnHand() && dragged.card_logic_.CanBeUsedFromHand()))) {
+            if (dragged != droped_onto && !droped_onto.IsOnHand() && (!dragged.IsOnHand() || (dragged.IsOnHand() && dragged.card_logic_.CanBeUsedFromHand())))
+            {
                 dragged.UseOn(droped_onto);
             }
         }
