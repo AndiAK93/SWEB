@@ -60,4 +60,6 @@ public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerE
         card.SetOnHand(false);
         cards_.Remove(card);
     }
+
+
 }
