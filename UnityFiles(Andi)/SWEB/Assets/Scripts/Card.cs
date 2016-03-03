@@ -14,7 +14,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public const int IDX_MIN_ROUND_TEXT = 3;
 
     int id_;
-    string card_name_;
+    public string card_name_;
     string card_description_;
 
     int unique_id_;
@@ -27,6 +27,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     Image image_;
     public String image_name_ = "";
+    public String image_name_2_ = "";
 
     bool is_on_hand_;
     bool being_dragged_ = false;
@@ -48,6 +49,27 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         card_name_ = "";// card_logic_.GetType().ToString();
         card_description_ = "Description";
+    }
+
+    public void SetImagePath(string path, string path2) {
+        image_name_ = path;
+        image_name_2_ = path2;
+        card_logic_.RefreshVisuals();
+    }
+
+
+    public void LeftRewardPressed() {
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+
+        Debug.Log("left");
+        card_logic_.LeftReward();
+    }
+
+    public void RightRewardPressed() {
+        if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+
+        Debug.Log("right");
+        card_logic_.RightReward();
     }
 
     public void SetId(int id)
@@ -72,16 +94,12 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void SetName(string new_name) {
         card_name_ = new_name;
+        card_logic_.RefreshVisuals();
     }
 
     public void SetDescription(string desc)
     {
         card_description_ = desc;
-    }
-
-    public void UpdateName() {
-        card_name_text_.text = card_name_;
-        //card_description_text_.text = card_description_;
     }
 
     public string GetName() {

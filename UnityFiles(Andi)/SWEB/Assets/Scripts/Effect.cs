@@ -17,24 +17,12 @@ public class Effect {
     {
         switch (effect_name) {
             case "lv_counter":  return new EffectModifyDuration(effect_value);
-
-            case "swap_card":
-                break;
-
-            case "destroy_lv_card":
-                break;
-
-            case "get_card_from_deck":
-                break;
-
-            case "modify_attack":
-                break;
-
-            case "modify_defense":
-                break;
-
-            case "modify_ects":
-                break;
+            case "swap_card": break;
+            case "destroy_lv_card": return new EffectDestroyLVCard();
+            case "get_card_from_deck": break;
+            case "modify_attack": break;
+            case "modify_defense": break;
+            case "modify_ects": return new EffectModifyEcts(effect_value);
 
             case "modify_defense_all":
                 break;
@@ -75,6 +63,20 @@ public class EffectDestroyLVCard : Effect {
 }
 
 
+public class EffectModifyEcts : Effect
+{
+    public EffectModifyEcts(int value) {
+        value_ = value;
+    }
+
+    public override ReturnType ApplyEffect(CardLogic from, Player target)
+    {
+        target.ModifyHealth(value_);
+        target.RefreshVisuals();
+        return ReturnType.OK;
+    }
+}
+
 
 public class EffectSpawnCard : Effect {
 
@@ -84,9 +86,24 @@ public class EffectSpawnCard : Effect {
 
     public override ReturnType ApplyEffect(CardLogic from, Player target) {
         card_t db_card = Game.GetGame().GetDataBank().getCard(value_);
-
         Card card = target.GetDeck().CreateCard(db_card);
-        target.GetField().AddCardToField(card);
+
+        switch (db_card.cardType_) {
+            case (int)CardType.Knowledge:
+                target.GetField().AddCardToField(card);
+                break;
+
+            case (int)CardType.Activity:
+                target.GetHand().AddCardToHand(card);
+                card.UseOn(target);
+                break;
+
+            case (int)CardType.Lecture:
+                
+                break;
+        }
+
+
         return ReturnType.OK;
     }
 }
