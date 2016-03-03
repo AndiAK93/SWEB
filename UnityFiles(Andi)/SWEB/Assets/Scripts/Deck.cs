@@ -9,9 +9,9 @@ public class Deck : MonoBehaviour {
     public GameObject card_init_activity_;
 
     Player player_;
-    List<Card> cards_;
+    public List<Card> cards_;
 
-    class Constatns {
+    class Constants {
         public static int CardsPerDeck = 10;
     }
 
@@ -19,54 +19,95 @@ public class Deck : MonoBehaviour {
     void Start() {
         player_ = GetComponentInParent<Player>();
         cards_ = new List<Card>();
-        CreateRandomDeck();
     }
 
-    void CreateRandomDeck() {
-        for (int card_idx = 0; card_idx < Constatns.CardsPerDeck; card_idx++) {
-            Card card = CreateCard(card_idx % 2 + 1);
-            cards_.Add(card);
+    public void CreateRandomDeck() {
+        Debug.Log("CREATING RANDOM DECKKKSKSKKSKSKSKK");
+        for (int card_idx = 0; card_idx < Constants.CardsPerDeck; card_idx++) {
+            card_t db_Card = Game.GetGame().GetDataBank().getRandomCard();
+            GetComponent<NetworkView>().RPC("GeneratedCardForDeck", RPCMode.Others, db_Card.id_);
+            cards_.Add(CreateCard(db_Card));
         }
     }
 
-    public Card CreateCard(int id) {
+    [RPC]
+    private void GeneratedCardForDeck(int id)
+    {
+        card_t db_Card = Game.GetGame().GetDataBank().getCard(id);
+        cards_.Add(CreateCard(db_Card));
+    }
+
+    public Card CreateCard(card_t db_card) {
         GameObject new_card = null;
         Card card = null;
-        switch (id % 3) {
-            case 0:
+
+        switch (db_card.cardType_) {
+            case (int)CardType.Knowledge:
                 new_card = Instantiate(card_init_knowledge_);
                 card = new_card.GetComponent<Card>();
-                card.SetCardLogic(new CardKnowledge(card, 5, 6, null));
+                knowledgecard_t k = (knowledgecard_t)db_card;
+                card.SetCardLogic(new CardKnowledge(card, k.attack_, k.defense_, Effect.CreateEffect(k.effectType_, k.effectValue_)));
                 break;
-            case 1:
+
+            case (int)CardType.Activity:
                 new_card = Instantiate(card_init_activity_);
                 card = new_card.GetComponent<Card>();
-                card.SetCardLogic(new CardActivity(card, new EffectIncHealth()));
+                actionCard_t a = (actionCard_t)db_card;
+                card.SetCardLogic(new CardActivity(card, a.cost_, Effect.CreateEffect(a.effectType_, a.effectValue_)));
                 break;
-            case 2:
+
+            case (int)CardType.Lecture:
                 new_card = Instantiate(card_init_lecture_);
                 card = new_card.GetComponent<Card>();
-                card.SetCardLogic(new CardLecture(card, 1, 1, new EffectSpawnCard(), null));
+                LVCard_t l = (LVCard_t)db_card;
+                card.SetCardLogic(new CardLecture(card, l.startRound_, l.duration_, new EffectSpawnCard(l.CardRewardID_[0]), null));
+                break;
+
+            default:
+                Debug.Log("Invalid Card Type");
+                Debug.Log("" + db_card.id_.ToString());
                 break;
         }
 
         new_card.transform.SetParent(this.transform);
         new_card.transform.position = this.transform.position;
-        new_card.name = "Card " + cards_.Count.ToString();
+        new_card.name = db_card.name_;
         new_card.SetActive(false);
+        card.SetId(db_card.id_);
+        card.SetUniqueId(Game.unique_card_id++);
         card.SetPlayer(player_);
+        card.SetName(db_card.name_);
+        card.UpdateName();
         return card;
     }
 
     public void DrawCardFromDeck() {
-        if (cards_.Count > 0) {
+        if (!Game.GetGame().IsMyTurn()) return;
+        if (Game.GetGame().canDrawCard) Game.GetGame().canDrawCard = false;
+        else return; 
+
+        Draw();
+        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
+    }
+
+    public void InitialDrawCardFromDeck()
+    {
+        Draw();
+        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
+    }
+
+    [RPC]
+    public void Draw()
+    {
+        if (cards_.Count > 0)
+        {
             Card card = cards_[0];
             cards_.RemoveAt(0);
             player_.GetHand().AddCardToHand(card);
         }
     }
 
-    public void RemoveCardFromDead(Card card) {
+    public void RemoveCardFromDeck(Card card) {
         cards_.Remove(card);
     }
 }

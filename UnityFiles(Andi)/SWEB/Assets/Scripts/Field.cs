@@ -5,7 +5,9 @@ using System.Collections.Generic;
 
 public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
     Player player_;
-    List<Card> cards_;
+    public List<Card> cards_;
+
+    
 
     // Use this for initialization
     void Start() {
@@ -15,13 +17,32 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
 
     public void OnDrop(PointerEventData eventData) {
         Card card = eventData.pointerDrag.GetComponent<Card>();
+       
         if (card != null && player_ == card.GetPlayer() && card.IsOnHand() && card.CanBePutOnField()) {
+            if (!Game.GetGame().IsMyTurn() || !card.IsMyCard()) return;
+            GetComponent<NetworkView>().RPC("EnemyPlayCard", RPCMode.Others, card.GetUniqueId());
             Debug.Log(eventData.pointerDrag.name + " was dropped on " + gameObject.name);
             card.SetParentToReturnTo(this.transform);
             player_.GetHand().RemoveCardFromHand(card);
             this.AddCardToField(card);
-            card.PlayCard();
+            card.PlayCard();         
         }
+    }
+
+    [RPC]
+    void EnemyPlayCard(int unique_id)
+    {
+        Card card = null;
+        List<Card> hand_cards = player_.GetHand().cards_;
+        for (int i = 0; i < hand_cards.Count; i++)
+        {
+            if (hand_cards[i].GetUniqueId() == unique_id) card = hand_cards[i];
+        }
+
+        card.SetParentToReturnTo(this.transform);
+        player_.GetHand().RemoveCardFromHand(card);
+        this.AddCardToField(card);
+        card.PlayCard();
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -37,7 +58,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
     }
 
     public void AddCardToField(Card card) {
-        Debug.Log("Added Card To Field " + card.name);
+        Debug.Log("Added Card To Field " + card.GetName());
         card.gameObject.transform.SetParent(this.transform);
         card.gameObject.SetActive(true);
         card.SetOnHand(false);
@@ -45,8 +66,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
     }
 
     public void RemoveCardFromField(Card card) {
-        Debug.Log("Removed Card From Field " + card.name);
+        Debug.Log("Removed Card From Field " + card.GetName());
         cards_.Remove(card);
     }
-
 }

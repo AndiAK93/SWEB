@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
     Player player_;
-    List<Card> cards_;
+    public List<Card> cards_;
 
     // Use this for initialization
     void Start() {
@@ -30,7 +30,7 @@ public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerE
     }
 
     public void AddCardToHand(Card card) {
-        Debug.Log("Added Card To Hand " + card.name);
+        Debug.Log("Added Card To Hand " + card.GetName());
         card.gameObject.transform.SetParent(this.transform);
         card.gameObject.SetActive(true);
         card.SetOnHand(true);
@@ -38,7 +38,7 @@ public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerE
     }
 
     public void RemoveCardFromHand(Card card) {
-        Debug.Log("Removed Card From Hand " + card.name);
+        Debug.Log("Removed Card From Hand " + card.GetName());
         card.SetOnHand(false);
         cards_.Remove(card);
     }
