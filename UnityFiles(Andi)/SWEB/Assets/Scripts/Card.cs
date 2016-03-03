@@ -68,12 +68,18 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void LeftRewardPressed() {
         if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
 
+        //Network
+        player_.EnemyLeftRewardPressed(GetUniqueId());
+
         Debug.Log("left");
         card_logic_.LeftReward();
     }
 
     public void RightRewardPressed() {
         if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+
+        //Network
+        player_.EnemyRightRewardPressed(GetUniqueId());
 
         Debug.Log("right");
         card_logic_.RightReward();
