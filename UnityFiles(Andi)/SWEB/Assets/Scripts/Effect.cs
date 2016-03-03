@@ -84,9 +84,24 @@ public class EffectSpawnCard : Effect {
 
     public override ReturnType ApplyEffect(CardLogic from, Player target) {
         card_t db_card = Game.GetGame().GetDataBank().getCard(value_);
-
         Card card = target.GetDeck().CreateCard(db_card);
-        target.GetField().AddCardToField(card);
+
+        switch (db_card.cardType_) {
+            case (int)CardType.Knowledge:
+                target.GetField().AddCardToField(card);
+                break;
+
+            case (int)CardType.Activity:
+                target.GetHand().AddCardToHand(card);
+                card.UseOn(target);
+                break;
+
+            case (int)CardType.Lecture:
+                
+                break;
+        }
+
+
         return ReturnType.OK;
     }
 }

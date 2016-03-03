@@ -39,6 +39,11 @@ public abstract class CardLogic {
     public void RemoveCard() {
         card_.Kill();
     }
+
+    public abstract void RefreshVisuals();
+
+    public virtual void LeftReward() {  }
+    public virtual void RightReward() { }
 }
 
 
@@ -46,9 +51,12 @@ public class CardKnowledge : CardLogic {
     int attack_ = 0;
     int health_ = 0;
 
-    Text attack_text_;
+    Text name_text_;
     Text health_text_;
-    
+    Text attack_text_;
+
+    Image portrait_image_;
+
     Effect effect_ = null;
 
     public CardKnowledge(Card card, int attack, int health, Effect effect) {
@@ -57,13 +65,24 @@ public class CardKnowledge : CardLogic {
         attack_ = attack;
         health_ = health;
 
+        name_text_ = card.GetComponentsInChildren<Text>()[0];
         health_text_ = card.GetComponentsInChildren<Text>()[1];
         attack_text_ = card.GetComponentsInChildren<Text>()[2];
+
+        portrait_image_ = card.GetComponentsInChildren<Image>()[1];
 
         effect_ = effect;
 
         attack_text_.text = attack.ToString();
         health_text_.text = health.ToString();
+    }
+
+    public override void RefreshVisuals()
+    {
+        name_text_.text = card_.card_name_;
+        attack_text_.text = attack_.ToString();
+        health_text_.text = health_.ToString();
+        portrait_image_.overrideSprite = Resources.Load<Sprite>(card_.image_name_);
     }
 
     public override Effect GetEffect() {
@@ -169,11 +188,28 @@ public class CardActivity : CardLogic {
     Effect effect_;
     int cost_;
 
+
+    Text name_text_;
+    Text cost_text_;
+    Image portrait_image_;
+
     public CardActivity(Card card, int cost, Effect effect) {
         card_ = card;
         type_ = CardType.Activity;
         effect_ = effect;
         cost_ = cost;
+
+        name_text_ = card.GetComponentsInChildren<Text>()[0];
+        cost_text_ = card.GetComponentsInChildren<Text>()[1];
+
+        portrait_image_ = card.GetComponentsInChildren<Image>()[1];
+    }
+
+    public override void RefreshVisuals()
+    {
+        portrait_image_.overrideSprite = Resources.Load<Sprite>(card_.image_name_);
+        name_text_.text = card_.card_name_;
+        cost_text_.text = cost_.ToString();
     }
 
     public override Effect GetEffect() {
@@ -219,13 +255,20 @@ public class CardLecture : CardLogic {
     int duration_;
     int played_in_round_;
 
-    Effect effect_base_;
+    Effect effect_left_;
+    Effect effect_right_;
+
     Effect[] effect_additional_;
 
-    Text min_round_text_;
+    Text name_text_;
     Text duration_text_;
+    Text min_round_text_;
 
-    public CardLecture(Card card, int min_round, int duration, Effect effect_base, Effect[] effect_additional) {
+
+    Button portrait_left_btn_;
+    Button portrait_right_btn_;
+
+    public CardLecture(Card card, int min_round, int duration, Effect effect_left, Effect effect_right) {
         card_ = card;
         type_ = CardType.Lecture;
 
@@ -233,21 +276,47 @@ public class CardLecture : CardLogic {
         duration_ = duration;
         played_in_round_ = -1;
 
-        effect_base_ = effect_base;
-        effect_additional_ = effect_additional;
+        effect_left_ = effect_left;
+        effect_right_ = effect_right;
 
-        min_round_text_ = card.GetComponentsInChildren<Text>()[Card.IDX_MIN_ROUND_TEXT];
-        duration_text_ = card.GetComponentsInChildren<Text>()[Card.IDX_DURATION_TEXT];
+        name_text_ = card.GetComponentsInChildren<Text>()[0];
+        duration_text_ = card.GetComponentsInChildren<Text>()[1];
+        min_round_text_ = card.GetComponentsInChildren<Text>()[2];
 
-        min_round_text_.text = min_round_.ToString();
+        portrait_left_btn_ = card.GetComponentsInChildren<Button>()[0];
+        portrait_right_btn_ = card.GetComponentsInChildren<Button>()[1];
+
+        portrait_left_btn_.interactable = false;
+        portrait_right_btn_.interactable = false;
+    }
+
+    public override void RefreshVisuals()
+    {
+        name_text_.text = card_.card_name_;
         duration_text_.text = duration_.ToString();
+        min_round_text_.text = min_round_.ToString();
+
+        portrait_left_btn_.image.overrideSprite = Resources.Load<Sprite>(card_.image_name_);
+        portrait_right_btn_.image.overrideSprite = Resources.Load<Sprite>(card_.image_name_2_);
     }
 
     public override void Update() {
         if (played_in_round_ != -1 && Game.GetGame().GetRound() >= (played_in_round_ + duration_)) {
-            effect_base_.ApplyEffect(this, card_.GetPlayer());
-            this.RemoveCard();
+            portrait_left_btn_.interactable = true;
+            portrait_right_btn_.interactable = true;
         }
+    }
+
+    public override void LeftReward()
+    {
+        effect_left_.ApplyEffect(this, card_.GetPlayer());
+        this.RemoveCard();
+    }
+
+    public override void RightReward()
+    {
+        effect_right_.ApplyEffect(this, card_.GetPlayer());
+        this.RemoveCard();
     }
 
     public override ReturnType IncDuration(int inc) {

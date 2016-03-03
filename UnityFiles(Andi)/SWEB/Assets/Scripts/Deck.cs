@@ -47,6 +47,7 @@ public class Deck : MonoBehaviour {
                 card = new_card.GetComponent<Card>();
                 knowledgecard_t k = (knowledgecard_t)db_card;
                 card.SetCardLogic(new CardKnowledge(card, k.attack_, k.defense_, Effect.CreateEffect(k.effectType_, k.effectValue_)));
+                card.SetImagePath(db_card.image_, "");
                 break;
 
             case (int)CardType.Activity:
@@ -54,13 +55,16 @@ public class Deck : MonoBehaviour {
                 card = new_card.GetComponent<Card>();
                 actionCard_t a = (actionCard_t)db_card;
                 card.SetCardLogic(new CardActivity(card, a.cost_, Effect.CreateEffect(a.effectType_, a.effectValue_)));
+                card.SetImagePath(db_card.image_, "");
                 break;
 
             case (int)CardType.Lecture:
                 new_card = Instantiate(card_init_lecture_);
                 card = new_card.GetComponent<Card>();
                 LVCard_t l = (LVCard_t)db_card;
-                card.SetCardLogic(new CardLecture(card, l.startRound_, l.duration_, new EffectSpawnCard(l.CardRewardID_[0]), null));
+                card.SetCardLogic(new CardLecture(card, l.startRound_, l.duration_, new EffectSpawnCard(l.CardRewardID_[0]), new EffectSpawnCard(l.CardRewardID_[1])));
+                string[] image_names = db_card.image_.Split('-');
+                card.SetImagePath(image_names[0], image_names[1]);
                 break;
 
             default:
@@ -77,7 +81,6 @@ public class Deck : MonoBehaviour {
         card.SetUniqueId(Game.unique_card_id++);
         card.SetPlayer(player_);
         card.SetName(db_card.name_);
-        card.UpdateName();
         return card;
     }
 
