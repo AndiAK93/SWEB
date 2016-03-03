@@ -63,6 +63,44 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void EnemyLeftRewardPressed(int unique_id)
+    {
+        GetComponent<NetworkView>().RPC("SyncLeftRewardPressed", RPCMode.Others, unique_id);
+    }
+
+    [RPC]
+    private void SyncLeftRewardPressed(int unique_id)
+    {
+        Card source = null;
+        Field playerField = GetField();
+
+        for (int i = 0; i < playerField.cards_.Count; i++)
+        {
+            if (playerField.cards_[i].GetUniqueId() == unique_id) source = playerField.cards_[i];
+        }
+
+        source.GetCardLogic().LeftReward();
+    }
+
+    public void EnemyRightRewardPressed(int unique_id)
+    {
+        GetComponent<NetworkView>().RPC("SyncRightRewardPressed", RPCMode.Others, unique_id);
+    }
+
+    [RPC]
+    private void SyncRightRewardPressed(int unique_id)
+    {
+        Card source = null;
+        Field playerField = GetField();
+
+        for (int i = 0; i < playerField.cards_.Count; i++)
+        {
+            if (playerField.cards_[i].GetUniqueId() == unique_id) source = playerField.cards_[i];
+        }
+
+        source.GetCardLogic().RightReward();
+    }
+
     public Deck GetDeck() {
         return deck_;
     }
