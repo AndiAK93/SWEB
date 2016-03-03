@@ -31,15 +31,19 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     void Awake() {
         card_name_text_ = GetComponentsInChildren<Text>()[Card.IDX_NAME_TEXT];
-        card_description_text_ = GetComponentsInChildren<Text>()[Card.IDX_DESCRIPTION_TEXT];
+        //card_description_text_ = GetComponentsInChildren<Text>()[Card.IDX_DESCRIPTION_TEXT];
+
+        Image[] images = GetComponentsInChildren<Image>();
+        if (images.Length >= 2) {
+            image_ = images[1];
 
 
-        Sprite sprite = Resources.Load<Sprite>("vwa2");
-        //myObject.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
 
+            Sprite sprite = Resources.Load<Sprite>("card/card_front");
+            //myObject.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
+            image_.overrideSprite = sprite;
+        }
 
-        image_ = GetComponentInChildren<Image>();
-        image_.overrideSprite = sprite;
         card_name_ = "";// card_logic_.GetType().ToString();
         card_description_ = "Description";
     }
@@ -75,7 +79,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void UpdateName() {
         card_name_text_.text = card_name_;
-        card_description_text_.text = card_description_;
+        //card_description_text_.text = card_description_;
     }
 
     public string GetName() {
@@ -116,7 +120,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     }
 
     public void Update() {
-        card_logic_.Update();
+        if (card_logic_ != null)
+            card_logic_.Update();
     }
 
     public void PlayCard() {
@@ -199,14 +204,14 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void OnPointerEnter(PointerEventData eventData) {
         color_ = GetComponentInChildren<Image>().color;
         GetComponentInChildren<Image>().color = color_highlight_;
-        Game.GetGame().GetInspector().ShowInspector();
-        Game.GetGame().GetInspector().ShowCard(this);
+        //Game.GetGame().GetInspector().ShowInspector();
+        //Game.GetGame().GetInspector().ShowCard(this);
         //transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
         GetComponentInChildren<Image>().color = color_;
-        Game.GetGame().GetInspector().HideInspector();
+        //Game.GetGame().GetInspector().HideInspector();
         //transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
 
