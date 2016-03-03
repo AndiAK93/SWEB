@@ -53,8 +53,8 @@ public class Game : MonoBehaviour {
         round_text_ = GetComponentsInChildren<Text>()[0];
         round_text_.text = round_.ToString();
 
-        //inspector_ = GetComponentInChildren<Inspector>();
-        //inspector_.HideInspector();
+        inspector_ = GetComponentInChildren<Inspector>();
+        inspector_.HideInspector();
     }
 
     public dbInterface GetDataBank() {

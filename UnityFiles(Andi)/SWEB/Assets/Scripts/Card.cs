@@ -29,6 +29,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public String image_name_ = "";
 
     bool is_on_hand_;
+    bool being_dragged_ = false;
 
     void Awake() {
         card_name_text_ = GetComponentsInChildren<Text>()[Card.IDX_NAME_TEXT];
@@ -172,6 +173,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void OnBeginDrag(PointerEventData eventData) {
         if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+        being_dragged_ = true;
         parent_to_return_to_ = this.transform.parent;
         drag_offset_.x = eventData.position.x - this.transform.position.x;
         drag_offset_.y = eventData.position.y - this.transform.position.y;
@@ -181,12 +183,14 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void OnDrag(PointerEventData eventData) {
         if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+        being_dragged_ = true;
         this.transform.position = eventData.position - drag_offset_;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
         // remove card from hand
         if (!Game.GetGame().IsMyTurn() || !IsMyCard()) return;
+        being_dragged_ = false;
         this.transform.SetParent(parent_to_return_to_);
         this.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
@@ -208,14 +212,17 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void OnPointerEnter(PointerEventData eventData) {
         color_ = GetComponentInChildren<Image>().color;
         GetComponentInChildren<Image>().color = color_highlight_;
-        //Game.GetGame().GetInspector().ShowInspector();
-        //Game.GetGame().GetInspector().ShowCard(this);
+        if((IsMyCard() || IsOnHand() && !being_dragged_) || (!IsMyCard() && !IsOnHand() && !being_dragged_))
+        {
+            Game.GetGame().GetInspector().ShowInspector();
+            Game.GetGame().GetInspector().ShowCard(this);
+        }
         //transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
         GetComponentInChildren<Image>().color = color_;
-        //Game.GetGame().GetInspector().HideInspector();
+        Game.GetGame().GetInspector().HideInspector();
         //transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
 
