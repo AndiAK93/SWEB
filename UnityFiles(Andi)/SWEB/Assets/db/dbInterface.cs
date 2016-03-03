@@ -182,7 +182,7 @@ public class dbInterface {
 			dbconn.Close ();
 			dbconn = null;
 
-		} while ((card_id == 43 || card_id == 44 || card_id == 46 || card_id == 47 || card_id == 51 || card_id == 50 || card_id == 7) && id == 0);
+		} while ( (card_id == 43 || card_id == 44 || card_id == 46 || card_id == 47 || card_id == 51 || card_id == 50 || card_id == 7 || card_id == 12) && id == 0);
 
 
 		card_t card = new card_t();
