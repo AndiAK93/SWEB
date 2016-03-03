@@ -164,7 +164,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     }
 
     public void UseOn(Card target) {
-		playAttackSound ();
         ReturnType status = card_logic_.UseOn(target.card_logic_);
 
         //Network
@@ -191,18 +190,11 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         if (status != ReturnType.NOT_POSSIBLE)
         {
-			playAttackSound ();
             Debug.Log("Card " + name + " is used on Player " + target.name);
         }
     }
 
-	private void playAttackSound()
-	{
-		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
-		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-		audioSource.clip = Resources.Load ("sound/attack2") as AudioClip;
-		audioSource.PlayOneShot (audioSource.clip, 0.4f);
-	} 
+
 
 
 

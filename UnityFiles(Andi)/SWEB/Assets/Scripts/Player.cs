@@ -167,6 +167,14 @@ public class Player : MonoBehaviour {
     }
 
     public void ModifyHealth(int mod) {
+
+		if(mod > 0) {
+			Game.GetGame ().playHealSound ();
+		}
+		else {
+			Game.GetGame ().playAttackSound ();
+		}
+
         health_ += mod;
     }
 

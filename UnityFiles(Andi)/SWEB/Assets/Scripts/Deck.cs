@@ -93,24 +93,16 @@ public class Deck : MonoBehaviour {
 
         Draw();
 
-		playDrawSound ();
+		Game.GetGame().playDrawSound ();
         GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
     }
 
-	private void playDrawSound()
-	{
-		Debug.Log ("play draw start");
-		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
-		audioSource.clip = Resources.Load ("sound/draw1") as AudioClip;
-		audioSource.PlayOneShot (audioSource.clip, 0.4f);
-		Debug.Log ("play draw end");
-	}
+
 
     public void InitialDrawCardFromDeck()
     {
         Draw();
-        GetComponent<NetworkView>().RPC("EnemyDraw", RPCMode.Others);
+        GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
     }
 
     [RPC]
@@ -124,16 +116,6 @@ public class Deck : MonoBehaviour {
         }
     }
 
-    [RPC]
-    public void EnemyDraw()
-    {
-        if (cards_.Count > 0)
-        {
-            Card card = cards_[0];
-            cards_.RemoveAt(0);
-            player_.GetHand().AddCardToHand(card);
-        }
-    }
 
     public void RemoveCardFromDeck(Card card) {
         cards_.Remove(card);
