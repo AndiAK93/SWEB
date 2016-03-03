@@ -13,6 +13,7 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
     void Start() {
         player_ = GetComponentInParent<Player>();
         cards_ = new List<Card>();
+		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void OnDrop(PointerEventData eventData) {
@@ -25,9 +26,16 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
             card.SetParentToReturnTo(this.transform);
             player_.GetHand().RemoveCardFromHand(card);
             this.AddCardToField(card);
-            card.PlayCard();         
+            card.PlayCard();   
         }
     }
+
+	private void playDropSound(){
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		audioSource.clip = Resources.Load ("sound/click3") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+	}
 
     [RPC]
     void EnemyPlayCard(int unique_id)
@@ -79,10 +87,21 @@ public class Field : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointer
         card.gameObject.SetActive(true);
         card.SetOnHand(false);
         cards_.Add(card);
+		playDropSound ();
     }
 
     public void RemoveCardFromField(Card card) {
         Debug.Log("Removed Card From Field " + card.GetName());
         cards_.Remove(card);
+		playDestroySound ();
     }
+
+	private void playDestroySound()
+	{
+		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/kill2") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+	}
+
 }

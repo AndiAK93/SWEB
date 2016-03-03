@@ -19,6 +19,7 @@ public class Deck : MonoBehaviour {
     void Start() {
         player_ = GetComponentInParent<Player>();
         cards_ = new List<Card>();
+		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void CreateRandomDeck() {
@@ -90,8 +91,20 @@ public class Deck : MonoBehaviour {
         else return; 
 
         Draw();
+
+		playDrawSound ();
         GetComponent<NetworkView>().RPC("Draw", RPCMode.Others);
     }
+
+	private void playDrawSound()
+	{
+		Debug.Log ("play draw start");
+		//AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/draw1") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.4f);
+		Debug.Log ("play draw end");
+	}
 
     public void InitialDrawCardFromDeck()
     {

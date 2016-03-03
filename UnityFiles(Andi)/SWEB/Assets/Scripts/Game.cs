@@ -53,8 +53,8 @@ public class Game : MonoBehaviour {
         round_text_ = GetComponentsInChildren<Text>()[0];
         round_text_.text = round_.ToString();
 
-        //inspector_ = GetComponentInChildren<Inspector>();
-        //inspector_.HideInspector();
+        inspector_ = GetComponentInChildren<Inspector>();
+        inspector_.HideInspector();
     }
 
     public dbInterface GetDataBank() {
@@ -96,7 +96,18 @@ public class Game : MonoBehaviour {
 
         GetComponent<NetworkView>().RPC("EnemyEndButtonClicked", RPCMode.Others);
         canDrawCard = true;
+		playRoundEndSound ();
     }
+
+	private void playRoundEndSound()
+	{
+		Debug.Log ("play draw start");
+		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		//AudioSource audioSource = gameObject.GetComponent<AudioSource> ();
+		audioSource.clip = Resources.Load ("sound/effect1") as AudioClip;
+		audioSource.PlayOneShot (audioSource.clip, 0.8f);
+		Debug.Log ("play draw end");
+	}
 
     [RPC]
     void EnemyEndButtonClicked()
