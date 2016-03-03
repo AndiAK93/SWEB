@@ -157,8 +157,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             card_logic_.Update();
     }
 
-    public void PlayCard() {
-        card_logic_.PlayCard();
+    public ReturnType PlayCard() {
+        return card_logic_.PlayCard();
     }
 
     public void UseOn(Card target) {
