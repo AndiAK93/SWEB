@@ -5,8 +5,7 @@ public class Effect {
         return ReturnType.NOT_POSSIBLE;
     }
 
-    public virtual ReturnType ApplyEffect(CardLogic from, Player target)
-    {
+    public virtual ReturnType ApplyEffect(CardLogic from, Player target) {
         return ReturnType.NOT_POSSIBLE;
     }
 }
