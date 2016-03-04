@@ -32,6 +32,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public String image_right_ = "";
 
+    public String left_desc_;
+    public String right_desc_;
+
     bool is_on_hand_;
     bool being_dragged_ = false;
 
@@ -73,6 +76,15 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         Debug.Log("left");
         card_logic_.LeftReward();
+    }
+
+    public void LeftPointerEnter(BaseEventData eventData) {
+        card_description_ = left_desc_;
+    }
+
+    public void RightPointerEnter(BaseEventData eventData)
+    {
+        card_description_ = right_desc_;
     }
 
     public void RightRewardPressed() {

@@ -152,8 +152,8 @@ public class EffectSpawnCard : Effect {
                 break;
 
             case (int)CardType.Activity:
-                //target.GetHand().AddCardToHand(card);
-                card.UseOn(target);
+                target.GetHand().AddCardToHand(card);
+                //card.UseOn(target);
                 break;
 
             case (int)CardType.Lecture:
