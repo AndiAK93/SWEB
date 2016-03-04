@@ -154,6 +154,7 @@ public class EffectSpawnCard : Effect {
 
             case (int)CardType.Activity:
                 target.GetHand().AddCardToHand(card);
+                target.GetHand().EnemyRandomCard(card.GetId());
                 //card.UseOn(target);
                 break;
 
