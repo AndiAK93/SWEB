@@ -120,6 +120,7 @@ public class EffectModifyDefenseAll : Effect
     {
         foreach (Card c in target.GetField().cards_) {
             c.GetCardLogic().ModifyHealth(-value_);
+            c.RefreshCard();
             c.GetCardLogic().RefreshVisuals();
         }
         return ReturnType.OK;
@@ -133,6 +134,7 @@ public class EffectDrawRandomCard : Effect
         card_t db_card = Game.GetGame().GetDataBank().getRandomCard();
         Card card = target.GetDeck().CreateCard(db_card);
         target.GetHand().AddCardToHand(card);
+        target.GetHand().EnemyRandomCard(card.GetId());
         return ReturnType.OK;
     }
 }
@@ -152,8 +154,9 @@ public class EffectSpawnCard : Effect {
                 break;
 
             case (int)CardType.Activity:
-                //target.GetHand().AddCardToHand(card);
-                card.UseOn(target);
+                target.GetHand().AddCardToHand(card);
+                target.GetHand().EnemyRandomCard(card.GetId());
+                //card.UseOn(target);
                 break;
 
             case (int)CardType.Lecture:
