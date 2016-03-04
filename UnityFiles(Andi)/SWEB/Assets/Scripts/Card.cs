@@ -271,11 +271,15 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void OnPointerEnter(PointerEventData eventData) {
         color_ = GetComponentInChildren<Image>().color;
         GetComponentInChildren<Image>().color = color_highlight_;
-        if((IsMyCard() || IsOnHand() && !being_dragged_) || (!IsMyCard() && !IsOnHand() && !being_dragged_))
+        if(!being_dragged_)
         {
-            Game.GetGame().GetInspector().ShowInspector();
-            Game.GetGame().GetInspector().ShowCard(this);
+            if (IsMyCard() || (!IsMyCard() && !IsOnHand()))
+            {
+                Game.GetGame().GetInspector().ShowInspector();
+                Game.GetGame().GetInspector().ShowCard(this);
+            }
         }
+        
         //transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
     }
 
