@@ -64,9 +64,18 @@ public class Deck : MonoBehaviour {
                 new_card = Instantiate(card_init_lecture_);
                 card = new_card.GetComponent<Card>();
                 LVCard_t l = (LVCard_t)db_card;
+
+                card_t c1 = Game.GetGame().GetDataBank().getCard(l.CardRewardID_[0]);
+                card_t c2 = Game.GetGame().GetDataBank().getCard(l.CardRewardID_[1]);
+
                 card.SetCardLogic(new CardLecture(card, l.startRound_, l.duration_, new EffectSpawnCard(l.CardRewardID_[0]), new EffectSpawnCard(l.CardRewardID_[1])));
                 string[] image_names = db_card.image_.Split('-');
                 card.SetImagePath(image_names[0], image_names[1]);
+
+                string desc =   "Left Reward: " + ((c1.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c1).description_ : "") + "\n" +
+                                "Right Reward: " + ((c2.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c2).description_ : "");
+                card.SetDescription(desc);
+           
                 break;
 
             default:
