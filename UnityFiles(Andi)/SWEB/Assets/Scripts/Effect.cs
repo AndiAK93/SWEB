@@ -120,6 +120,7 @@ public class EffectModifyDefenseAll : Effect
     {
         foreach (Card c in target.GetField().cards_) {
             c.GetCardLogic().ModifyHealth(-value_);
+            c.RefreshCard();
             c.GetCardLogic().RefreshVisuals();
         }
         return ReturnType.OK;
