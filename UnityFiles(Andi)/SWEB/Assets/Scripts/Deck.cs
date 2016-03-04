@@ -72,8 +72,12 @@ public class Deck : MonoBehaviour {
                 string[] image_names = db_card.image_.Split('-');
                 card.SetImagePath(image_names[0], image_names[1]);
 
-                string desc =   "Left Reward: " + ((c1.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c1).description_ : ("Attack: " + ((knowledgecard_t)c1).attack_.ToString() + " Health: " + ((knowledgecard_t)c1).defense_.ToString())) + "\n" +
+                string desc = "Left Reward: " + ((c1.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c1).description_ : "") + "\n" + "Right Reward: " + ((c2.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c2).description_ : "");
+
+
+                /*string desc =   "Left Reward: " + ((c1.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c1).description_ : ("Attack: " + ((knowledgecard_t)c1).attack_.ToString() + " Health: " + ((knowledgecard_t)c1).defense_.ToString())) + "\n" +
                                 "Right Reward: " + ((c2.cardType_ == (int)CardType.Activity) ? ((actionCard_t)c2).description_ : ("Attack: " + ((knowledgecard_t)c2).attack_.ToString() + " Health: " + ((knowledgecard_t)c2).defense_.ToString()));
+                */
                 card.SetDescription(desc);
            
                 break;
