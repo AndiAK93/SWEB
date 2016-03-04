@@ -133,6 +133,7 @@ public class EffectDrawRandomCard : Effect
         card_t db_card = Game.GetGame().GetDataBank().getRandomCard();
         Card card = target.GetDeck().CreateCard(db_card);
         target.GetHand().AddCardToHand(card);
+        target.GetHand().EnemyRandomCard(card.GetId());
         return ReturnType.OK;
     }
 }

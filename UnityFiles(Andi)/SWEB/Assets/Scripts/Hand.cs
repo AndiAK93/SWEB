@@ -55,6 +55,19 @@ public class Hand : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerE
         cards_.Add(card);
     }
 
+    public void EnemyRandomCard(int id)
+    {
+        GetComponent<NetworkView>().RPC("SyncEnemyRandomCard", RPCMode.Others, id);
+    }
+
+    [RPC]
+    public void SyncEnemyRandomCard(int id)
+    {
+        card_t db_card = Game.GetGame().GetDataBank().getCard(id);
+        Card card = player_.GetDeck().CreateCard(db_card);
+        AddCardToHand(card);
+    }
+
     public void RemoveCardFromHand(Card card) {
         Debug.Log("Removed Card From Hand " + card.GetName());
         card.SetOnHand(false);
