@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour {
 
@@ -60,6 +61,25 @@ public class Game : MonoBehaviour {
         inspector_.HideInspector();
 		audioSource = gameObject.AddComponent<AudioSource>();
     }
+		
+	void Update(){
+		if(players_[0].getHealth() <= 0 && Network.peerType == NetworkPeerType.Server) {
+			SceneManager.LoadScene("defeat");
+			Debug.Log ("player0 defeat");
+		}
+		if(players_[1].getHealth() <= 0 && Network.peerType == NetworkPeerType.Server) {
+			SceneManager.LoadScene("victory");
+			Debug.Log ("player1 defeat");
+		}	
+		if(players_[0].getHealth() <= 0 && Network.peerType == NetworkPeerType.Client) {
+			SceneManager.LoadScene("victory");
+			Debug.Log ("player0 defeat");
+		}
+		if(players_[1].getHealth() <= 0 && Network.peerType == NetworkPeerType.Client) {
+			SceneManager.LoadScene("defeat");
+			Debug.Log ("player0 defeat");
+		}	
+	}
 
     public dbInterface GetDataBank() {
         return data_base_;

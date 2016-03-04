@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+
 public class Player : MonoBehaviour {
     Deck deck_;
     Hand hand_;
@@ -24,6 +25,11 @@ public class Player : MonoBehaviour {
         if (Network.peerType == NetworkPeerType.Server) playerServer = GetComponent<PlayerServer>();
         if (Network.peerType == NetworkPeerType.Client) playerClient = GetComponent<PlayerClient>();
     }
+
+
+	public int getHealth(){
+		return health_;
+	}
 
     public void EnemyUseOn(int source_unique_id, int target_unique_id)
     {
@@ -176,6 +182,8 @@ public class Player : MonoBehaviour {
 		}
 
         health_ += mod;
+
+	
     }
 
     public void RefreshVisuals() {
